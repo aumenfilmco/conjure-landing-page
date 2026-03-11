@@ -28,7 +28,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Visiting the deployed URL triggers a PostHog `$pageview` and the browser Network tab shows no PostHog initialization errors
   3. `src/lib/content.ts` contains all approved copy strings and `src/lib/env.ts` returns the trial signup URL fallback when Lemon Squeezy env vars are absent
   4. Running `grep -r "#" src/styles` returns zero results (no hex colors in the design system)
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Scaffold repo, install dependencies, create Vitest test infrastructure with RED stubs
+- [ ] 01-02-PLAN.md — Write globals.css (OKLCH tokens), lib/env.ts (accessor + fallback), lib/content.ts (all brief copy)
+- [ ] 01-03-PLAN.md — Root layout with Geist fonts + PostHogProvider, skeleton page, Vercel deploy
 
 ### Phase 2: Public Page
 **Goal**: A visiting Director or Agency CD can scroll from hero to waitlist form, see the branded Google Slides deck output, understand what Conjure does, review pricing, and submit their email — all in one session
@@ -72,7 +77,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/TBD | Not started | - |
+| 1. Foundation | 0/3 | Ready to execute | - |
 | 2. Public Page | 0/TBD | Not started | - |
 | 3. Admin Route | 0/TBD | Not started | - |
 | 4. QA and Launch | 0/TBD | Not started | - |
