@@ -117,23 +117,58 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUND-01 through FOUND-06 | Phase 1 | Pending |
-| HERO-01 through HERO-04 | Phase 2 | Pending |
-| HOW-01 through HOW-02 | Phase 2 | Pending |
-| FEAT-01 through FEAT-06 | Phase 2 | Pending |
-| PRICE-01 through PRICE-06 | Phase 2 | Pending |
-| WAIT-01 through WAIT-07 | Phase 2 | Pending |
-| SOCIAL-01 through SOCIAL-02 | Phase 2 | Pending |
-| FAQ-01 through FAQ-03 | Phase 2 | Pending |
-| ADMIN-01 through ADMIN-05 | Phase 3 | Pending |
-| COPY-01 through COPY-02 | Phase 2 | Pending |
-| PERF-01 through PERF-03 | Phase 4 | Pending |
+| FOUND-01 | Phase 1 | Pending |
+| FOUND-02 | Phase 1 | Pending |
+| FOUND-03 | Phase 1 | Pending |
+| FOUND-04 | Phase 1 | Pending |
+| FOUND-05 | Phase 1 | Pending |
+| FOUND-06 | Phase 1 | Pending |
+| HERO-01 | Phase 2 | Pending |
+| HERO-02 | Phase 2 | Pending |
+| HERO-03 | Phase 2 | Pending |
+| HERO-04 | Phase 2 | Pending |
+| HOW-01 | Phase 2 | Pending |
+| HOW-02 | Phase 2 | Pending |
+| FEAT-01 | Phase 2 | Pending |
+| FEAT-02 | Phase 2 | Pending |
+| FEAT-03 | Phase 2 | Pending |
+| FEAT-04 | Phase 2 | Pending |
+| FEAT-05 | Phase 2 | Pending |
+| FEAT-06 | Phase 2 | Pending |
+| PRICE-01 | Phase 2 | Pending |
+| PRICE-02 | Phase 2 | Pending |
+| PRICE-03 | Phase 2 | Pending |
+| PRICE-04 | Phase 2 | Pending |
+| PRICE-05 | Phase 2 | Pending |
+| PRICE-06 | Phase 2 | Pending |
+| WAIT-01 | Phase 2 | Pending |
+| WAIT-02 | Phase 2 | Pending |
+| WAIT-03 | Phase 2 | Pending |
+| WAIT-04 | Phase 2 | Pending |
+| WAIT-05 | Phase 2 | Pending |
+| WAIT-06 | Phase 2 | Pending |
+| WAIT-07 | Phase 2 | Pending |
+| SOCIAL-01 | Phase 2 | Pending |
+| SOCIAL-02 | Phase 2 | Pending |
+| FAQ-01 | Phase 2 | Pending |
+| FAQ-02 | Phase 2 | Pending |
+| FAQ-03 | Phase 2 | Pending |
+| ADMIN-01 | Phase 3 | Pending |
+| ADMIN-02 | Phase 3 | Pending |
+| ADMIN-03 | Phase 3 | Pending |
+| ADMIN-04 | Phase 3 | Pending |
+| ADMIN-05 | Phase 3 | Pending |
+| COPY-01 | Phase 2 | Pending |
+| COPY-02 | Phase 2 | Pending |
+| PERF-01 | Phase 4 | Pending |
+| PERF-02 | Phase 4 | Pending |
+| PERF-03 | Phase 4 | Pending |
 
 **Coverage:**
-- v1 requirements: 40 total
-- Mapped to phases: 40
+- v1 requirements: 46 total (40 content + 6 foundation — all individual rows counted above)
+- Mapped to phases: 46
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-11*
-*Last updated: 2026-03-11 after initial definition*
+*Last updated: 2026-03-11 — traceability expanded to individual requirement rows after roadmap creation*
