@@ -1,3 +1,19 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: planning
+stopped_at: Completed 01-foundation/01-01-PLAN.md (scaffold + Vitest RED stubs)
+last_updated: "2026-03-11T21:09:39.384Z"
+last_activity: 2026-03-11 — Roadmap created, ready to begin Phase 1 planning
+progress:
+  total_phases: 4
+  completed_phases: 0
+  total_plans: 3
+  completed_plans: 1
+  percent: 33
+---
+
 # Project State
 
 ## Project Reference
@@ -14,7 +30,7 @@ Plan: 0 of TBD in current phase
 Status: Ready to plan
 Last activity: 2026-03-11 — Roadmap created, ready to begin Phase 1 planning
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [███░░░░░░░] 33%
 
 ## Performance Metrics
 
@@ -34,6 +50,7 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 01-foundation P01 | 2 | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -45,6 +62,8 @@ Recent decisions affecting current work:
 - Framework: Next.js 15 App Router (not Astro) — developer knows it at depth; admin route requires server-side Supabase + cookie auth patterns already shipped on main Conjure app
 - Admin security: CVE-2025-29927 mitigation is mandatory — re-verify JWT in Server Component body, not middleware only; pin next>=15.2.3
 - Checkout URLs: Fall back to `https://conjurestudio.app/auth/signup` until Lemon Squeezy configured; centralized in `lib/env.ts`
+- [Phase 01-foundation]: create-next-app@latest shipped Tailwind v4 + @tailwindcss/postcss directly — no manual upgrade needed; Next.js 16.1.6 resolves to (exceeds) the CVE-2025-29927 floor
+- [Phase 01-foundation]: Tailwind v4 CSS-first: no tailwind.config.ts, CSS @theme used instead — confirmed by deletion check
 
 ### Pending Todos
 
@@ -58,6 +77,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11
-Stopped at: Roadmap written. STATE.md initialized. Ready to run `/gsd:plan-phase 1`.
+Last session: 2026-03-11T21:09:39.382Z
+Stopped at: Completed 01-foundation/01-01-PLAN.md (scaffold + Vitest RED stubs)
 Resume file: None
