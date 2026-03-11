@@ -12,7 +12,7 @@ Four phases take the project from a blank Next.js scaffold to a launch-ready mar
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - Brand tokens, env vars, PostHog init, and copy constants before any component is written
+- [x] **Phase 1: Foundation** - Brand tokens, env vars, PostHog init, and copy constants before any component is written
 - [ ] **Phase 2: Public Page** - All visitor-facing sections rendered, waitlist form wired to live API, PostHog events firing
 - [ ] **Phase 3: Admin Route** - Password-protected `/admin` with defense-in-depth auth and Supabase waitlist table
 - [ ] **Phase 4: QA and Launch** - Lighthouse LCP, physical device testing, banned-word audit, CORS verification, and deploy
@@ -31,9 +31,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Scaffold repo, install dependencies, create Vitest test infrastructure with RED stubs
-- [ ] 01-02-PLAN.md — Write globals.css (OKLCH tokens), lib/env.ts (accessor + fallback), lib/content.ts (all brief copy)
-- [ ] 01-03-PLAN.md — Root layout with Geist fonts + PostHogProvider, skeleton page, Vercel deploy
+- [x] 01-01-PLAN.md — Scaffold repo, install dependencies, create Vitest test infrastructure with RED stubs
+- [x] 01-02-PLAN.md — Write globals.css (OKLCH tokens), lib/env.ts (accessor + fallback), lib/content.ts (all brief copy)
+- [x] 01-03-PLAN.md — Root layout with Geist fonts + PostHogProvider, skeleton page, Vercel deploy
 
 ### Phase 2: Public Page
 **Goal**: A visiting Director or Agency CD can scroll from hero to waitlist form, see the branded Google Slides deck output, understand what Conjure does, review pricing, and submit their email — all in one session
@@ -77,7 +77,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 2/3 | In Progress|  |
+| 1. Foundation | 3/3 | Complete | 2026-03-11 |
 | 2. Public Page | 0/TBD | Not started | - |
 | 3. Admin Route | 0/TBD | Not started | - |
 | 4. QA and Launch | 0/TBD | Not started | - |
