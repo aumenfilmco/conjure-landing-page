@@ -7,7 +7,7 @@
 
 ### Foundation
 
-- [ ] **FOUND-01**: Brand tokens defined as OKLCH values in Tailwind v4 `@theme` block (not hex) — primary mint `oklch(0.92 0.18 142)`, background `oklch(0.04 0 0)`, all values from brief Section 1.1
+- [x] **FOUND-01**: Brand tokens defined as OKLCH values in Tailwind v4 `@theme` block (not hex) — primary mint `oklch(0.92 0.18 142)`, background `oklch(0.04 0 0)`, all values from brief Section 1.1
 - [ ] **FOUND-02**: Geist Sans and Geist Mono loaded via `next/font/google` and applied to base layout
 - [ ] **FOUND-03**: PostHog initialized in root layout with `capture_pageview: false` (manual page view tracking)
 - [x] **FOUND-04**: Environment variables wired: `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_POSTHOG_HOST`, `LEMON_SQUEEZY_*_CHECKOUT_URL` (×4), `ADMIN_PASSWORD`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_URL`
@@ -117,7 +117,7 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUND-01 | Phase 1 | Pending |
+| FOUND-01 | Phase 1 | Complete |
 | FOUND-02 | Phase 1 | Pending |
 | FOUND-03 | Phase 1 | Pending |
 | FOUND-04 | Phase 1 | Complete |

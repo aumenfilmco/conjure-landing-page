@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 01-foundation/01-01-PLAN.md (scaffold + Vitest RED stubs)
-last_updated: "2026-03-11T21:09:39.384Z"
+stopped_at: Completed 01-foundation/01-02-PLAN.md (brand tokens, env vars, copy constants)
+last_updated: "2026-03-11T21:13:14.039Z"
 last_activity: 2026-03-11 — Roadmap created, ready to begin Phase 1 planning
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 3
-  completed_plans: 1
+  completed_plans: 2
   percent: 33
 ---
 
@@ -51,6 +51,7 @@ Progress: [███░░░░░░░] 33%
 
 *Updated after each plan completion*
 | Phase 01-foundation P01 | 2 | 2 tasks | 8 files |
+| Phase 01-foundation P02 | 2 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -64,6 +65,9 @@ Recent decisions affecting current work:
 - Checkout URLs: Fall back to `https://conjurestudio.app/auth/signup` until Lemon Squeezy configured; centralized in `lib/env.ts`
 - [Phase 01-foundation]: create-next-app@latest shipped Tailwind v4 + @tailwindcss/postcss directly — no manual upgrade needed; Next.js 16.1.6 resolves to (exceeds) the CVE-2025-29927 floor
 - [Phase 01-foundation]: Tailwind v4 CSS-first: no tailwind.config.ts, CSS @theme used instead — confirmed by deletion check
+- [Phase 01-foundation]: OKLCH-only in @theme block — no hex values, all 24 tokens use oklch() syntax
+- [Phase 01-foundation]: Server-only vars not re-exported from env.ts — must be accessed via process.env in Server Components only
+- [Phase 01-foundation]: checkoutUrls uses || not ?? for fallback — empty string env var also falls back to FALLBACK_URL
 
 ### Pending Todos
 
@@ -77,6 +81,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T21:09:39.382Z
-Stopped at: Completed 01-foundation/01-01-PLAN.md (scaffold + Vitest RED stubs)
+Last session: 2026-03-11T21:13:14.037Z
+Stopped at: Completed 01-foundation/01-02-PLAN.md (brand tokens, env vars, copy constants)
 Resume file: None
