@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-stopped_at: Completed 01-foundation/01-02-PLAN.md (brand tokens, env vars, copy constants)
-last_updated: "2026-03-11T21:13:14.039Z"
-last_activity: 2026-03-11 — Roadmap created, ready to begin Phase 1 planning
+status: blocked-human-action
+stopped_at: "01-03 Task 2: Deploy to Vercel — awaiting interactive terminal for Vercel CLI link + env vars"
+last_updated: "2026-03-11T21:20:00Z"
+last_activity: 2026-03-11 — Task 1 complete (layout, PostHogProvider, skeleton page); Vercel deploy requires human terminal action
 progress:
   total_phases: 4
   completed_phases: 0
@@ -68,6 +68,9 @@ Recent decisions affecting current work:
 - [Phase 01-foundation]: OKLCH-only in @theme block — no hex values, all 24 tokens use oklch() syntax
 - [Phase 01-foundation]: Server-only vars not re-exported from env.ts — must be accessed via process.env in Server Components only
 - [Phase 01-foundation]: checkoutUrls uses || not ?? for fallback — empty string env var also falls back to FALLBACK_URL
+- [Phase 01-foundation]: PostHog capture_pageview: false — manual $pageview deferred to Phase 2; init alone triggers decide call
+- [Phase 01-foundation]: Geist font variables on html element (not body) so --font-geist-sans inherits through entire document
+- [Phase 01-foundation]: Vercel CLI v50 requires interactive TTY for project link — cannot be run non-interactively with --scope flag
 
 ### Pending Todos
 
@@ -75,12 +78,14 @@ None yet.
 
 ### Blockers/Concerns
 
+- **ACTIVE GATE — Vercel deploy (01-03 Task 2):** Vercel CLI v50.17.1 requires interactive TTY for initial project link. Must run `vercel link` + `vercel env add` + `vercel --prod` in an interactive terminal. PostHog key (`phc_...`) needed from PostHog Project Settings.
 - **CORS prerequisite (Phase 2):** `conjurestudio.app/api/waitlist` must return `Access-Control-Allow-Origin` for the landing page origin before the waitlist form can be integration-tested. Change lives in the Conjure app repo, not this one.
 - **Hero screenshot asset (Phase 2):** Branded Google Slides deck screenshot is not yet delivered. Without it the output-first hero cannot be implemented. Sourcing this is the first task of Phase 2.
 - **Waitlist API response shape (Phase 2):** Exact status codes and error formats from the live `/api/waitlist` endpoint should be confirmed by reading the Conjure app route before designing form error/success logic.
 
 ## Session Continuity
 
-Last session: 2026-03-11T21:13:14.037Z
-Stopped at: Completed 01-foundation/01-02-PLAN.md (brand tokens, env vars, copy constants)
+Last session: 2026-03-11T21:20:00Z
+Stopped at: 01-03 Task 2 — Vercel deploy checkpoint (human action required)
 Resume file: None
+Resume instruction: After completing Vercel deploy, respond with "deployed: [url]" to trigger continuation agent
