@@ -45,7 +45,15 @@ Plans:
   3. PostHog receives `cta_clicked`, `pricing_tier_viewed`, `waitlist_form_submitted`, and `waitlist_form_error` events with the correct properties — confirmed via PostHog Live Events
   4. Scrolling the full page reveals Hero, How It Works (3 steps), 5 Feature cards, 4 Pricing tier cards, Social proof placeholder, FAQ (3+ questions), and Waitlist form — in that order — with no banned words in any visible copy
   5. The layout has no horizontal scroll and all CTAs are fully visible and tappable on a physical iOS Safari device at 375px
-**Plans**: TBD
+**Plans**: 6 plans
+
+Plans:
+- [ ] 02-00-PLAN.md — Wave 0: globals.css utility classes (.glass-surface, .fade-in-section) + RED test stubs for all sections
+- [ ] 02-01-PLAN.md — Wave 1: HeroSection, HowItWorksSection, FeaturesSection (static upper sections)
+- [ ] 02-02-PLAN.md — Wave 2A: PricingSection (billing toggle, 4 tiers, Director highlight, PostHog events)
+- [ ] 02-03-PLAN.md — Wave 2B: WaitlistSection, SocialProofSection, FAQSection (parallel with 02-02)
+- [ ] 02-04-PLAN.md — Wave 3: Header, Footer, useFadeIn hook, page.tsx assembly with checkoutUrls prop wiring
+- [ ] 02-05-PLAN.md — Wave 4: Hero screenshot asset delivery + next/image priority wiring + visual verification
 
 ### Phase 3: Admin Route
 **Goal**: The landing page owner can log in at `/admin` with a password, view all waitlist signups sorted newest-first, and trust that the route cannot be accessed by bypassing middleware
@@ -78,6 +86,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-03-11 |
-| 2. Public Page | 0/TBD | Not started | - |
+| 2. Public Page | 0/6 | Planning | - |
 | 3. Admin Route | 0/TBD | Not started | - |
 | 4. QA and Launch | 0/TBD | Not started | - |
