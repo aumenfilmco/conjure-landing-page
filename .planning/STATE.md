@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 02-public-page/02-02-PLAN.md
-last_updated: "2026-03-12T16:48:44.017Z"
+stopped_at: Completed 02-public-page/02-03-PLAN.md
+last_updated: "2026-03-12T16:48:54.452Z"
 last_activity: 2026-03-11 — Phase 1 all 3 plans complete; production URL live at conjurestudio.ai
 progress:
   total_phases: 4
@@ -83,6 +83,9 @@ Recent decisions affecting current work:
 - [Phase 02-public-page]: hero-sentinel div placed as last child of HeroSection — required by Wave 3 Header Intersection Observer
 - [Phase 02-public-page]: checkoutUrls passed as prop from page.tsx (Server Component) — env.ts never imported in PricingSection
 - [Phase 02-public-page]: Toggle aria-label always contains 'Annual' to satisfy getByRole test selector pattern
+- [Phase 02-public-page]: formState \!== 'idle' disables submit button — covers both submitting and error states (WAIT-03)
+- [Phase 02-public-page]: data-placeholder='TESTIMONIAL_REQUIRED' on social proof card — data attribute passes container.innerHTML.includes() where JSX comment would not
+- [Phase 02-public-page]: FAQSection uses native details/summary — zero JS, each item opens independently, accessible, answers in DOM for Testing Library
 
 ### Pending Todos
 
@@ -97,7 +100,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T16:48:35.528Z
-Stopped at: Completed 02-public-page/02-02-PLAN.md
+Last session: 2026-03-12T16:48:54.450Z
+Stopped at: Completed 02-public-page/02-03-PLAN.md
 Resume file: None
 Resume instruction: Begin Phase 2 planning (Public Page)
