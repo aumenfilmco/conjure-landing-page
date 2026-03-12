@@ -1,324 +1,402 @@
 # Architecture Research
 
-**Domain:** SaaS marketing landing page with admin route
-**Researched:** 2026-03-11
-**Confidence:** HIGH
+**Domain:** Scroll-synced sticky panel + glass surface redesign — Conjure Landing Page v1.1
+**Researched:** 2026-03-12
+**Confidence:** HIGH (existing codebase is fully readable; scroll-spy pattern is well-established)
 
-## Standard Architecture
+---
 
-### System Overview
+## Milestone Scope
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        BROWSER (Client)                          │
-│  ┌───────────────────────────────────────────────────────────┐  │
-│  │  / (Landing Page)    │    /admin (Protected Admin View)   │  │
-│  │  - Hero              │    - Password gate (cookie check)  │  │
-│  │  - Features          │    - Waitlist signup table         │  │
-│  │  - Pricing           │                                    │  │
-│  │  - Social Proof      │                                    │  │
-│  │  - Waitlist Form     │                                    │  │
-│  └───────────────────────────────────────────────────────────┘  │
-└────────────┬─────────────────────────┬──────────────────────────┘
-             │                         │
-             ▼                         ▼
-┌────────────────────┐    ┌────────────────────────┐
-│  conjurestudio.app │    │   Supabase (direct)    │
-│  /api/waitlist     │    │   waitlist table       │
-│  (cross-origin     │    │   service_role key     │
-│   POST, no proxy)  │    │   server component     │
-└────────────────────┘    │   only, never client   │
-                          └────────────────────────┘
-             │
-             ▼
-┌────────────────────┐
-│  PostHog           │
-│  (client-side JS)  │
-│  custom events     │
-└────────────────────┘
-```
+This document focuses on the v1.1 milestone: replacing the static `FeaturesSection` card grid with a scroll-synced sticky panel (left: scrolling feature text; right: sticky screenshot display) and fixing `.glass-surface` so it reads as actual glass in Safari. Everything else on the page (Header, HeroSection, HowItWorksSection, PricingSection, FAQSection, WaitlistSection, Footer) is untouched.
 
-### Component Responsibilities
+---
 
-| Component | Responsibility | Implementation |
-|-----------|----------------|----------------|
-| `/` (root page) | Single-page marketing experience — all sections stacked in scroll order | Next.js Server Component or Astro page |
-| `HeroSection` | Primary headline, subhead, deck output visual, CTA button | Static markup + image |
-| `FeaturesSection` | 5 feature-benefit cards (copy from brief verbatim) | Static markup |
-| `PricingSection` | 4-tier table, CTA buttons with env var URL fallback | Client Component (PostHog events on click) |
-| `SocialProofSection` | `<!-- TESTIMONIAL_REQUIRED -->` placeholder | Static markup, ships as comment |
-| `WaitlistForm` | Email + optional name, POST to external API, success/error state | Client Component |
-| `/admin` (route) | Password gate + waitlist table | Server Component (Supabase query) with cookie auth check |
-| `AdminLoginForm` | Password input, sets session cookie on success | Client Component or Server Action |
-| `PostHogProvider` | Wraps app, initializes SDK, exposes `usePostHog` hook | Client Component (providers.tsx) |
-| `middleware.ts` | Redirects unauthenticated requests to `/admin` → `/admin/login` | Edge middleware (cookie check only) |
+## System Overview
 
-## Recommended Project Structure
+The redesign touches exactly one section (`FeaturesSection`) and one global utility (`.glass-surface`). The existing architecture is server-first. The new `FeaturesSection` must become a Client Component because it drives interactive scroll state.
 
 ```
-src/
-├── app/
-│   ├── layout.tsx           # Root layout — PostHogProvider wrapper
-│   ├── page.tsx             # Landing page (single scroll)
-│   ├── admin/
-│   │   ├── page.tsx         # Waitlist table (Server Component, Supabase query)
-│   │   └── login/
-│   │       └── page.tsx     # Password form
-│   └── api/
-│       └── admin-auth/
-│           └── route.ts     # POST: verify ADMIN_PASSWORD, set cookie
+page.tsx (Server Component)
+|
++-- FadeInWrapper (Client) -- REMOVE from around FeaturesSection (see Anti-Pattern 1)
+|
++-- FeaturesSection (REWRITE: 'use client')
+|   |
+|   +-- [left column] Feature text blocks
+|   |     Each block has an invisible scroll sentinel <div>
+|   |     useScrollSpy hook observes all sentinels
+|   |
+|   +-- [right column] FeaturePanel (new, sticky)
+|         Receives activeIndex prop
+|         Renders FEATURE_LIST[activeIndex].img via next/image
+|
++-- FeatureNav (new, optional sticky left column)
+      Receives activeIndex + onSelect props
+      Renders feature title list with active indicator
+      Clicking a title scrolls sentinel into view + sets state
+
+globals.css
+  .glass-surface (MODIFY: add explicit -webkit-backdrop-filter)
+```
+
+`activeIndex` (integer 0–5) is the single piece of state. Everything flows down from it.
+
+---
+
+## Component Responsibilities
+
+| Component | New or Modified | Responsibility | Client or Server |
+|-----------|----------------|----------------|-----------------|
+| `FeaturesSection` | Modified (full rewrite) | Owns `activeIndex` state; renders two-column sticky layout; mounts scroll observers | `'use client'` |
+| `FeatureNav` | New | Vertical list of feature titles with active indicator; receives `activeIndex` + `onSelect` | Client (receives props; no own state) |
+| `FeaturePanel` | New | Sticky screenshot display; receives `activeIndex`; renders `FEATURE_LIST[activeIndex].img` | Client (receives props; no own state) |
+| `useScrollSpy` | New hook | Attaches `IntersectionObserver` to each feature's scroll sentinel; calls `setActiveIndex` when sentinel enters viewport | Client hook |
+| `.glass-surface` | Modified | Adds `-webkit-backdrop-filter` explicitly; increases background opacity for visible contrast against dark bg | CSS utility in `globals.css` |
+| `FadeInWrapper` | Removed from FeaturesSection | No longer wraps FeaturesSection (sticky conflict; see Anti-Pattern 1) | — |
+| `content.ts` / `FEATURES` | Unchanged | Source of truth for copy; `FEATURE_LIST` array stays in `FeaturesSection` | N/A |
+
+---
+
+## Recommended File Structure (additions and changes only)
+
+```
+conjure-landing-page/src/
 ├── components/
 │   ├── sections/
-│   │   ├── HeroSection.tsx
-│   │   ├── FeaturesSection.tsx
-│   │   ├── PricingSection.tsx
-│   │   └── SocialProofSection.tsx
-│   ├── forms/
-│   │   └── WaitlistForm.tsx  # 'use client' — fetch to external API
-│   └── providers/
-│       └── PostHogProvider.tsx  # 'use client' — PHProvider init
-├── lib/
-│   ├── supabase-admin.ts    # createClient with service_role key (server-only)
-│   └── env.ts               # typed env var accessors with fallback logic
-└── middleware.ts             # /admin route guard (cookie presence check)
+│   │   └── FeaturesSection.tsx        # REWRITE — becomes 'use client'
+│   └── features/                      # NEW folder
+│       ├── FeatureNav.tsx             # NEW — sticky nav list
+│       └── FeaturePanel.tsx           # NEW — sticky screenshot
+├── hooks/
+│   ├── useFadeIn.ts                   # Unchanged
+│   └── useScrollSpy.ts               # NEW — IntersectionObserver for active index
+└── app/
+    └── globals.css                    # MODIFY .glass-surface only
 ```
 
-### Structure Rationale
+Rationale for `components/features/` subfolder: keeps sub-components out of the flat `sections/` directory. `FeaturesSection.tsx` imports from it; nothing else does.
 
-- **`components/sections/`:** All marketing sections are pure presentational components. Isolating them makes copy edits, section reordering, and responsive tweaks surgical.
-- **`components/forms/`:** `WaitlistForm` is the only client-interactive component on the public page. Isolating it prevents `'use client'` from bubbling up to parent sections unnecessarily.
-- **`lib/supabase-admin.ts`:** The service_role client must never reach the browser. A dedicated file makes it easy to audit that it is only imported from Server Components and API routes.
-- **`lib/env.ts`:** Centralizes the Lemon Squeezy fallback logic — one place to change when checkout URLs are configured. Avoids scattered inline ternaries.
-- **`middleware.ts`:** Handles fast cookie-presence redirect. Does NOT verify the cookie cryptographically — that happens in the `/admin` Server Component itself (defense in depth against CVE-2025-29927).
+---
 
 ## Architectural Patterns
 
-### Pattern 1: Cross-Origin Form POST (No Proxy)
+### Pattern 1: Scroll Spy via IntersectionObserver
 
-**What:** `WaitlistForm` sends `fetch('https://conjurestudio.app/api/waitlist', { method: 'POST', ... })` directly from the browser. No Next.js API route in the middle.
-**When to use:** When the target endpoint is already public, handles CORS, and you control neither server (different Vercel project).
-**Trade-offs:** Zero infrastructure overhead; error handling depends entirely on what the external API returns. Duplicate submissions are the external API's problem (it returns 200 on duplicate, which is correct here).
+**What:** Each feature in the list has an invisible sentinel `<div>` placed at the top of that feature block. An `IntersectionObserver` with `rootMargin: '0px 0px -50% 0px'` fires when a sentinel crosses the viewport midpoint. When it enters, `setActiveIndex(i)` is called.
+
+**When to use:** When scroll position must drive UI state without polling `window.scrollY` on every frame.
+
+**Trade-offs:**
+- Pro: No scroll event listeners — zero jank, runs off main thread.
+- Pro: Handles rapid scrolling correctly (last intersecting entry wins).
+- Con: `rootMargin` percentage values are relative to the root (viewport), not the element — requires tuning.
+- Con: Needs cleanup on unmount to avoid observer leaks.
+
+**Confidence:** HIGH — well-established pattern; used by CSS-Tricks, Linear, Stripe-style feature sections.
 
 **Example:**
 ```typescript
-// components/forms/WaitlistForm.tsx
+// src/hooks/useScrollSpy.ts
 'use client'
-async function handleSubmit(email: string, name?: string) {
-  const res = await fetch('https://conjurestudio.app/api/waitlist', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, name }),
-  })
-  if (!res.ok) throw new Error('Submission failed')
-  posthog.capture('waitlist_form_submitted', { email_domain: email.split('@')[1] })
+import { useEffect, useRef } from 'react'
+
+export function useScrollSpy(
+  count: number,
+  onActiveChange: (index: number) => void,
+) {
+  const sentinelRefs = useRef<(HTMLDivElement | null)[]>([])
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const i = sentinelRefs.current.indexOf(entry.target as HTMLDivElement)
+            if (i !== -1) onActiveChange(i)
+          }
+        })
+      },
+      { rootMargin: '0px 0px -50% 0px', threshold: 0 },
+    )
+    sentinelRefs.current.forEach((el) => el && observer.observe(el))
+    return () => observer.disconnect()
+  }, [count, onActiveChange])
+
+  return sentinelRefs
 }
 ```
 
-### Pattern 2: Cookie-Based Admin Password Gate (No OAuth)
+### Pattern 2: Two-Column Sticky Layout via CSS Only
 
-**What:** A Server Action or API route at `/api/admin-auth` checks `req.body.password === process.env.ADMIN_PASSWORD`, then sets a signed session cookie (`iron-session` or `jose`). Middleware reads cookie presence to redirect. The `/admin` Server Component re-verifies the cookie cryptographically before rendering Supabase data.
-**When to use:** Single-user internal tool with no external identity provider. Simple, zero-dependency auth.
-**Trade-offs:** Password is shared (no per-user sessions). Anyone with the env var can reset it. Acceptable for an internal admin view on a marketing page.
+**What:** The section uses CSS grid with two columns. The left column contains the scrolling feature text blocks (natural document flow). The right column uses `position: sticky; top: [offset]` — the panel stays fixed while the left content scrolls past it.
 
-**Example:**
-```typescript
-// app/api/admin-auth/route.ts  (Server Action alternative also viable)
-import { cookies } from 'next/headers'
-import { SignJWT } from 'jose'
+**When to use:** Any "reading pane" that must track scrolling content on the other side.
 
-export async function POST(req: Request) {
-  const { password } = await req.json()
-  if (password !== process.env.ADMIN_PASSWORD) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-  const token = await new SignJWT({}).setExpirationTime('7d')
-    .sign(new TextEncoder().encode(process.env.ADMIN_JWT_SECRET))
-  cookies().set('admin_session', token, { httpOnly: true, secure: true, sameSite: 'lax' })
-  return Response.json({ ok: true })
-}
+**Trade-offs:**
+- Pro: Pure CSS — no JS for sticky behavior itself.
+- Pro: Well-supported across all modern browsers.
+- Con: Sticky breaks silently if any ancestor has `overflow: hidden` or a CSS `transform`. This is the most common failure mode. See Anti-Pattern 1.
+
+**Example layout:**
+```tsx
+// Inside FeaturesSection
+<section className="relative py-24 px-6 max-w-5xl mx-auto">
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+
+    {/* Left: scrolling feature blocks */}
+    <div>
+      {FEATURE_LIST.map((f, i) => (
+        <div key={f.key} className="mb-32">
+          {/* invisible sentinel — observed by useScrollSpy */}
+          <div ref={(el) => { sentinelRefs.current[i] = el }} aria-hidden="true" />
+          <h3 className="text-foreground font-medium text-xl mb-3">{f.TITLE}</h3>
+          <p className="text-muted-foreground text-sm leading-relaxed">{f.OUTCOME}</p>
+        </div>
+      ))}
+    </div>
+
+    {/* Right: sticky screenshot panel */}
+    <div className="sticky top-24 self-start">
+      <FeaturePanel activeIndex={activeIndex} />
+    </div>
+
+  </div>
+</section>
 ```
 
-```typescript
-// app/admin/page.tsx — re-verify before touching Supabase
-import { cookies } from 'next/headers'
-import { jwtVerify } from 'jose'
+### Pattern 3: Controlled Active State Lifted to Parent
 
-export default async function AdminPage() {
-  const token = cookies().get('admin_session')?.value
-  if (!token) redirect('/admin/login')
-  try {
-    await jwtVerify(token, new TextEncoder().encode(process.env.ADMIN_JWT_SECRET))
-  } catch {
-    redirect('/admin/login')
-  }
-  // safe to query Supabase now
-  const { data } = await supabaseAdmin.from('waitlist').select('*').order('created_at', { ascending: false })
-  // render table...
-}
-```
+**What:** `FeaturesSection` owns `activeIndex` as `useState`. `useScrollSpy` fires `setActiveIndex` via callback. `FeatureNav` also triggers `setActiveIndex` on click. Both `FeatureNav` and `FeaturePanel` are purely display — they receive `activeIndex` as a read-only prop.
 
-### Pattern 3: Env Var Fallback for Checkout URLs
+**When to use:** Multiple child components must react to the same scalar state.
 
-**What:** A typed accessor in `lib/env.ts` returns the Lemon Squeezy URL if set, or falls back to `https://conjurestudio.app/auth/signup`. Pricing section imports from this file — never reads `process.env` directly.
-**When to use:** Whenever a feature is gated on configuration that may not be present during development.
-**Trade-offs:** One extra indirection, but guarantees consistent fallback behavior and makes it obvious when/where to switch.
+**Trade-offs:**
+- Pro: Single source of truth — no sync bugs.
+- Pro: Click and scroll both drive the same setter.
+- Con: Click path should also call `sentinelRefs.current[i].scrollIntoView({ behavior: 'smooth' })` so the scroll position stays consistent with the displayed feature. If omitted, the scroll spy will eventually override the click-selected state as the user scrolls.
 
-**Example:**
-```typescript
-// lib/env.ts
-export const checkoutUrls = {
-  scout:    process.env.LEMON_SQUEEZY_SCOUT_CHECKOUT_URL    || 'https://conjurestudio.app/auth/signup',
-  director: process.env.LEMON_SQUEEZY_DIRECTOR_CHECKOUT_URL || 'https://conjurestudio.app/auth/signup',
-  producer: process.env.LEMON_SQUEEZY_PRODUCER_CHECKOUT_URL || 'https://conjurestudio.app/auth/signup',
-  studio:   process.env.LEMON_SQUEEZY_STUDIO_CHECKOUT_URL   || 'https://conjurestudio.app/auth/signup',
-}
-```
+---
 
 ## Data Flow
 
-### Waitlist Form Submission
+### Scroll-Driven Active State
 
 ```
-User fills form (email, name?)
-    ↓
-WaitlistForm.tsx (client) validates input
-    ↓
-fetch POST → https://conjurestudio.app/api/waitlist
-    ↓                              ↓
-200 OK (success/duplicate)    4xx/5xx (error)
-    ↓                              ↓
-Success state + PostHog        Error state + PostHog
-posthog.capture(               posthog.capture(
-  'waitlist_form_submitted')     'waitlist_form_error')
+User scrolls down page
+    |
+    v
+IntersectionObserver (useScrollSpy) fires on sentinel[i] entering viewport midpoint
+    |
+    v
+onActiveChange(i) callback --> setActiveIndex(i) in FeaturesSection
+    |
+    +--> activeIndex prop to FeatureNav  --> highlights title i
+    +--> activeIndex prop to FeaturePanel --> renders FEATURE_LIST[i].img
 ```
 
-### Admin View
+### Click-Driven Active State
 
 ```
-Request → /admin
-    ↓
-middleware.ts (edge)
-    → cookie absent? → redirect /admin/login
-    → cookie present? → pass through (does NOT verify, only checks presence)
-    ↓
-app/admin/page.tsx (Server Component)
-    → jwtVerify(cookie) — cryptographic check (defense in depth)
-    → fail? → redirect /admin/login
-    → pass? → supabaseAdmin.from('waitlist').select(*)
-    ↓
-Render table (Server Component, no client JS needed)
+User clicks title i in FeatureNav
+    |
+    v
+onSelect(i) prop --> setActiveIndex(i) in FeaturesSection
+                 --> sentinelRefs.current[i].scrollIntoView({ behavior: 'smooth' })
+    |
+    +--> activeIndex prop to FeatureNav  --> highlights title i
+    +--> activeIndex prop to FeaturePanel --> renders FEATURE_LIST[i].img
 ```
 
-### PostHog Event Flow
+### Glass Surface Fix
 
 ```
-PHProvider (providers.tsx, 'use client')
-    ↓ initializes posthog-js with NEXT_PUBLIC_POSTHOG_KEY
-    ↓ wraps app/layout.tsx
-    ↓
-Components call posthog.capture() directly:
-  - WaitlistForm   → waitlist_form_submitted, waitlist_form_error
-  - PricingSection → pricing_tier_viewed (Intersection Observer or hover)
-  - CTA buttons    → cta_clicked (with { location: 'hero' | 'pricing' })
+globals.css .glass-surface
+    |
+    backdrop-filter: blur(var(--glass-blur))                     -- all browsers
+    -webkit-backdrop-filter: blur(var(--glass-blur))             -- Safari (MUST be explicit)
+    background: linear-gradient(145deg, oklch(0.20 0 0 / 0.55) 0%, oklch(0.10 0 0 / 0.35) 100%)
+    border: 1px solid var(--glass-border)
+    border-top-color: var(--glass-border-top)                    -- brighter top edge for depth
+    |
+    Applied to: FeaturePanel wrapper (and any existing card using .glass-surface)
 ```
 
-### Environment Variable Flow
-
-```
-Vercel project env vars
-    ↓
-lib/env.ts (server + client safe accessors)
-    ↓
-PricingSection imports checkoutUrls (NEXT_PUBLIC_ vars only, or passed as props from Server Component)
-```
-
-Note: Checkout URLs must use `NEXT_PUBLIC_` prefix if read in Client Components, or be passed as props from a Server Component parent. If PricingSection is a Client Component (for PostHog events), use `NEXT_PUBLIC_LEMON_SQUEEZY_*_CHECKOUT_URL`.
-
-## Build Order (Phase Dependencies)
-
-Build in this order — each layer depends on the one before:
-
-1. **Foundation** (no dependencies): Brand tokens (`globals.css` with OKLCH custom properties), `lib/env.ts` (checkout URL fallbacks), `PostHogProvider` setup.
-2. **Static sections** (depend on brand tokens): `HeroSection`, `FeaturesSection`, `SocialProofSection` — pure markup, no interactivity.
-3. **Interactive public components** (depend on PostHog init): `WaitlistForm` (cross-origin fetch + events), `PricingSection` (CTA buttons + `pricing_tier_viewed` event).
-4. **Admin route** (depends on Supabase client, cookie auth): `lib/supabase-admin.ts`, `/api/admin-auth`, `/admin/login`, `/admin/page`.
-5. **Middleware** (depends on cookie strategy being decided): `middleware.ts` — wire last, after cookie name/format is settled.
-6. **Responsive polish and copy audit**: Final pass — no new dependencies.
-
-## Scaling Considerations
-
-| Scale | Architecture Adjustments |
-|-------|--------------------------|
-| 0–10k visitors/mo | Static export or edge SSR — current architecture handles this with zero changes |
-| 10k–500k visitors/mo | Enable Next.js ISR or move to Astro static build; the external waitlist API is the only stateful component and it scales independently |
-| 500k+ visitors/mo | Irrelevant for a marketing page — if traffic is this high, revenue justifies a redesign |
-
-This is a marketing page. Scaling complexity is a non-concern. Optimize for load time (Core Web Vitals) over architectural flexibility.
-
-## Anti-Patterns
-
-### Anti-Pattern 1: Proxy the Waitlist API Through the Landing Page
-
-**What people do:** Create a Next.js API route at `/api/waitlist` that forwards to the Conjure app.
-**Why it's wrong:** Adds latency, adds an extra failure point, requires maintaining a second server-side request. The Conjure endpoint is public and handles CORS — there is nothing to hide.
-**Do this instead:** POST directly from the browser to `https://conjurestudio.app/api/waitlist`.
-
-### Anti-Pattern 2: Middleware-Only Admin Auth
-
-**What people do:** Check the session cookie only in `middleware.ts` and render the admin page unconditionally if middleware passes.
-**Why it's wrong:** CVE-2025-29927 (March 2025, CVSS 9.1) demonstrated that the `x-middleware-subrequest` header can bypass middleware entirely on unpatched Next.js. Even on patched versions, defense in depth is correct practice.
-**Do this instead:** Re-verify the session token in the Server Component (or Server Action) before any Supabase query executes. Middleware is fast-path rejection only.
-
-### Anti-Pattern 3: Reading `SUPABASE_SERVICE_ROLE_KEY` in Client Components
-
-**What people do:** Import the Supabase admin client into a component that also has `'use client'`, or prefix the service_role key with `NEXT_PUBLIC_`.
-**Why it's wrong:** The service_role key bypasses Row Level Security entirely. Exposing it client-side grants any browser visitor full read/write access to the database.
-**Do this instead:** The Supabase admin client lives only in `lib/supabase-admin.ts`, imported only from Server Components and API routes. No `NEXT_PUBLIC_` prefix on the service_role key.
-
-### Anti-Pattern 4: Inline `process.env` for Checkout URL Fallbacks
-
-**What people do:** Scatter `process.env.LEMON_SQUEEZY_SCOUT_CHECKOUT_URL || 'https://...'` across multiple pricing components.
-**Why it's wrong:** When URLs are eventually configured, the fallback logic must be updated in multiple places. It also mixes infrastructure concerns with rendering logic.
-**Do this instead:** Centralize in `lib/env.ts`. Components import `checkoutUrls.scout` — they don't know about fallback logic.
-
-### Anti-Pattern 5: Making `PricingSection` a Full Server Component
-
-**What people do:** Render pricing as a pure Server Component to keep it simple.
-**Why it's wrong:** PostHog event capture (`pricing_tier_viewed`, `cta_clicked`) requires browser APIs. You cannot call `posthog.capture()` from a Server Component.
-**Do this instead:** Either mark `PricingSection` as `'use client'` (simplest), or split into a Server Component shell that passes checkout URLs as props to a thin Client Component for the interactive button layer.
+---
 
 ## Integration Points
 
-### External Services
+### FadeInWrapper / transform Conflict (Critical)
 
-| Service | Integration Pattern | Notes |
-|---------|---------------------|-------|
-| `conjurestudio.app/api/waitlist` | Browser `fetch` POST, cross-origin | CORS must be enabled on the Conjure app side (verify before shipping); endpoint returns 200 on success and on duplicate |
-| Supabase | `@supabase/supabase-js` `createClient` with service_role key, server-only | Use `SUPABASE_SERVICE_ROLE_KEY` (no `NEXT_PUBLIC_` prefix). Only needed for `/admin` route |
-| PostHog | `posthog-js` initialized in `PHProvider`, `usePostHog` hook or direct `posthog.capture()` in client components | Use `NEXT_PUBLIC_POSTHOG_KEY`. Disable `capture_pageview: false` in init; use `PostHogPageView` component for SPA-style page view tracking |
-| Lemon Squeezy | No SDK — URLs only. Pricing CTAs link to checkout URLs via `lib/env.ts` | Falls back to Conjure signup URL until configured. No webhook or API integration needed on the landing page |
-| Vercel | Deployment target — separate project from Conjure app | Env vars set in Vercel dashboard; `ADMIN_PASSWORD`, `ADMIN_JWT_SECRET`, `SUPABASE_*` are server-only (no `NEXT_PUBLIC_` prefix) |
+`FadeInWrapper` applies `.fade-in-section` which starts with `transform: translateY(1rem)`. **A CSS `transform` on an ancestor creates a new containing block and breaks `position: sticky`** — the sticky element's scroll container becomes the transformed ancestor rather than the viewport. The panel will not stick.
 
-### Internal Boundaries
+Resolution options:
+
+| Option | Approach | Trade-off |
+|--------|----------|-----------|
+| A — Recommended | Remove `FadeInWrapper` from around `FeaturesSection` in `page.tsx` | Loses fade-in for this section only; section is long enough that it is already in view before user reaches it |
+| B | Keep `FadeInWrapper` but apply `opacity`-only fade (remove `translateY` via a modifier class) | Requires new CSS class; more surface area |
+| C | Move fade to an inner div that does not contain the sticky column | More complex DOM nesting |
+
+Option A is cleanest. Change in `page.tsx`:
+```tsx
+// Before (remove the wrapping FadeInWrapper from FeaturesSection only):
+<FadeInWrapper>
+  <FeaturesSection />
+</FadeInWrapper>
+
+// After:
+<FeaturesSection />
+```
+
+### Internal Component Boundaries
 
 | Boundary | Communication | Notes |
 |----------|---------------|-------|
-| `PostHogProvider` ↔ marketing sections | Provider wraps layout; sections call `posthog.capture()` directly | No prop drilling needed |
-| `WaitlistForm` ↔ external API | Direct `fetch` — no shared state, no global store | Keep form state local (`useState`) |
-| `/admin/page` ↔ Supabase | Direct import of `supabaseAdmin` — no abstraction layer needed | Single query, single table; no caching needed |
-| `middleware.ts` ↔ `/admin/page` | Cookie `admin_session` is the contract | Cookie name must match in middleware check and Server Component verification |
-| `lib/env.ts` ↔ `PricingSection` | Import of `checkoutUrls` object | If `PricingSection` is a Client Component, env vars must use `NEXT_PUBLIC_` prefix or be passed as Server Component props |
+| `FeaturesSection` ↔ `FeatureNav` | Props: `activeIndex: number`, `onSelect: (i: number) => void` | FeatureNav has no internal state |
+| `FeaturesSection` ↔ `FeaturePanel` | Prop: `activeIndex: number` | Panel reads `FEATURE_LIST[activeIndex]` directly — no need to pass the full feature object |
+| `FeaturesSection` ↔ `useScrollSpy` | Hook callback: `onActiveChange: (i: number) => void` | Hook owns observer refs; parent owns state |
+| `FeaturesSection` ↔ `FadeInWrapper` | Parent/child — remove this relationship | See above |
+| `.glass-surface` ↔ Safari | CSS `-webkit-backdrop-filter` | Must be explicit in `globals.css`; Tailwind v4 does not reliably emit it (open bug confirmed 2025) |
+| `FeaturePanel` ↔ `next/image` | Component props `src`, `width`, `height`, `alt` change with `activeIndex` | Next.js handles per-src optimization; use `priority` on index 0 |
+
+---
+
+## Build Order
+
+Build in this order. Each step is independently testable before the next depends on it.
+
+| Step | What | File | Depends On | Testable By |
+|------|------|------|-----------|-------------|
+| 1 | Fix `.glass-surface` — add `-webkit-backdrop-filter`, verify contrast | `globals.css` | Nothing | Visual check in Safari devtools simulator |
+| 2 | Create `useScrollSpy` hook — pure hook, no UI | `hooks/useScrollSpy.ts` | Nothing | Console log or unit test |
+| 3 | Create `FeaturePanel` — receives `activeIndex`, renders screenshot | `components/features/FeaturePanel.tsx` | `FEATURE_LIST` shape (stable) | Render with hardcoded `activeIndex={0}` |
+| 4 | Create `FeatureNav` — receives `activeIndex` + `onSelect`, renders title list | `components/features/FeatureNav.tsx` | Nothing | Render with hardcoded props |
+| 5 | Rewrite `FeaturesSection` — add `'use client'`, two-column layout, wire hook + state | `components/sections/FeaturesSection.tsx` | Steps 2, 3, 4 | Scroll through page |
+| 6 | Remove `FadeInWrapper` from `FeaturesSection` in `page.tsx` | `app/page.tsx` | Step 5 | Verify sticky panel stays fixed during scroll |
+| 7 | QA pass — Safari blur, sticky behavior, click nav, keyboard accessibility on FeatureNav buttons | All | Steps 1–6 | Manual + screenshot |
+
+---
+
+## Anti-Patterns
+
+### Anti-Pattern 1: transform on a Sticky Ancestor
+
+**What people do:** Leave `FadeInWrapper` (which applies `transform: translateY()`) wrapping `FeaturesSection`.
+
+**Why it's wrong:** The CSS spec says a transformed element creates a new containing block. `position: sticky` treats the nearest scrollable ancestor as its scroll container — if that ancestor has a transform, the sticky panel treats it as the container, not the viewport. The panel will not stick at all or will stick to the wrong boundary.
+
+**Do this instead:** Remove `FadeInWrapper` from around `FeaturesSection`. Keep it on all other sections. Verify there is no `transform`, `filter`, `will-change: transform`, or `contain` on any ancestor between the sticky element and `<body>`.
+
+### Anti-Pattern 2: Animating `src` swaps with opacity directly on `<Image>`
+
+**What people do:** Put `transition: opacity 0.3s` on the `<Image>` component and toggle it when `activeIndex` changes. A flash appears because the old and new images race during the transition — `next/image` does not guarantee immediate decode of the new `src`.
+
+**Do this instead:** Either (a) pre-render all six images in the DOM with `opacity: 0 / opacity: 1` toggling — Next.js can decode them all at mount — or (b) accept a direct snap on `activeIndex` change. The screenshots are contained in a fixed-size panel so there is no layout shift either way. For a landing page, a direct swap is acceptable.
+
+### Anti-Pattern 3: Scroll Event Listeners for Active State
+
+**What people do:** Add `window.addEventListener('scroll', handler)` in `useEffect` and compute active feature with `getBoundingClientRect()` on every scroll event.
+
+**Why it's wrong:** Scroll events fire on the main thread at display refresh rate (120 calls/second on 120Hz displays). `getBoundingClientRect()` forces synchronous layout recalculation on each call. Result: visible jank on mid-range hardware.
+
+**Do this instead:** `IntersectionObserver` fires off the main thread and only when intersection changes. It is both more performant and more semantically correct for this use case.
+
+### Anti-Pattern 4: Relying on Tailwind `backdrop-blur-*` for Safari
+
+**What people do:** Use `backdrop-blur-lg` from Tailwind and assume `-webkit-backdrop-filter` is emitted automatically.
+
+**Why it's wrong:** Tailwind v4 has a confirmed open bug (reported August 2025, still open as of March 2026) where `-webkit-backdrop-filter` is not reliably emitted in all build configurations. The `.glass-surface` utility in `globals.css` already applies blur via CSS variables — the fix is to add `-webkit-backdrop-filter: blur(var(--glass-blur))` explicitly in that same block. No Tailwind utility class needed.
+
+### Anti-Pattern 5: Storing Feature Image Paths in content.ts
+
+**What people do:** Move the `img` / `w` / `h` fields from `FEATURE_LIST` into `content.ts` alongside copy.
+
+**Why it's wrong:** `content.ts` is the source of truth for marketing copy. Image paths and dimensions are implementation concerns, not copy. Mixing them makes content edits riskier and adds non-copy fields to the content contract.
+
+**Do this instead:** Keep `FEATURE_LIST` (with image paths) local to `FeaturesSection.tsx` as it is today. `content.ts` exports only copy (`FEATURES.SHOT_EXTRACTION.TITLE`, etc.). `FeaturesSection` merges copy from `content.ts` with image paths from the local array.
+
+---
+
+## Scaling Considerations
+
+This is a static marketing page. Performance considerations are:
+
+| Concern | Approach |
+|---------|----------|
+| Six feature screenshots loaded at once | Use `priority` on index 0 image; let remaining five lazy-load (default). Alternatively pre-render all six as `opacity: 0` for instant swap. All are `.webp` and already sized correctly in `FEATURE_LIST`. |
+| IntersectionObserver leak | `useScrollSpy` must call `observer.disconnect()` in its `useEffect` cleanup function. Already included in the example above. |
+| `onActiveChange` identity stability | Wrap `setActiveIndex` or the callback passed to `useScrollSpy` in `useCallback` to avoid re-running the observer `useEffect` on every render. |
+
+---
 
 ## Sources
 
-- [Next.js vs Astro for marketing sites — Makers Den, 2025](https://makersden.io/blog/nextjs-vs-astro-in-2025-which-framework-best-for-your-marketing-website) — MEDIUM confidence (WebSearch)
-- [CVE-2025-29927 Next.js middleware bypass — Vercel postmortem](https://vercel.com/blog/postmortem-on-next-js-middleware-bypass) — HIGH confidence (official)
-- [CVE-2025-29927 — Datadog Security Labs analysis](https://securitylabs.datadoghq.com/articles/nextjs-middleware-auth-bypass/) — HIGH confidence (official vendor)
-- [PostHog Next.js docs](https://posthog.com/docs/libraries/next-js) — HIGH confidence (official)
-- [PostHog Astro docs](https://posthog.com/docs/libraries/astro) — HIGH confidence (official)
-- [Password protecting Next.js routes — Alex Chan](https://www.alexchantastic.com/password-protecting-next) — MEDIUM confidence (community, verified pattern)
-- [Supabase service_role with Next.js server components — Supabase docs](https://supabase.com/docs/guides/getting-started/quickstarts/nextjs) — HIGH confidence (official)
+- Direct codebase read: `FeaturesSection.tsx`, `globals.css`, `useFadeIn.ts`, `FadeInWrapper.tsx`, `page.tsx`, `content.ts` — HIGH confidence
+- CSS-Tricks: [Sticky Table of Contents with Scrolling Active States](https://css-tricks.com/sticky-table-of-contents-with-scrolling-active-states/) — HIGH confidence (authoritative, verified pattern)
+- DEV Community: [Create section navigation with React and IntersectionObserver](https://dev.to/maciekgrzybek/create-section-navigation-with-react-and-intersection-observer-fg0) — MEDIUM confidence (community, consistent with spec)
+- Tailwind CSS GitHub issue #18765: [backdrop-blur not working on Safari 18.6](https://github.com/tailwindlabs/tailwindcss/issues/18765) — HIGH confidence (official repo, confirmed open 2025)
+- Tailwind CSS docs: [backdrop-filter-blur](https://tailwindcss.com/docs/backdrop-filter-blur) — HIGH confidence (official)
+- MDN CSS Containing Block spec: transform creates new containing block — HIGH confidence (spec-level, stable)
 
 ---
-*Architecture research for: Conjure Landing Page (SaaS marketing landing page + admin)*
-*Researched: 2026-03-11*
+
+## Prior Architecture (v1.0 — Full Page)
+
+The section below documents the broader landing page architecture established in v1.0. It remains valid for all sections outside the FeaturesSection redesign.
+
+---
+
+### System Overview (v1.0)
+
+```
+BROWSER (Client)
+  / (Landing Page)            /admin (Protected Admin View)
+  - Hero                       - Password gate (cookie check)
+  - Features                   - Waitlist signup table
+  - Pricing
+  - Social Proof
+  - Waitlist Form
+       |                              |
+       v                              v
+conjurestudio.app/api/waitlist    Supabase (direct)
+(cross-origin POST, no proxy)     waitlist table / service_role key
+                                  server component only, never client
+       |
+       v
+PostHog (client-side JS, custom events)
+```
+
+### Component Responsibilities (v1.0)
+
+| Component | Responsibility | Implementation |
+|-----------|----------------|----------------|
+| `/` root page | Single-page marketing experience | Next.js Server Component |
+| `HeroSection` | Headline, subhead, deck output visual, CTA | Static markup + image |
+| `FeaturesSection` | Scroll-synced sticky panel (v1.1 redesign) | Client Component (post-v1.1) |
+| `PricingSection` | 4-tier table, CTA buttons with env fallback | Client Component (PostHog events) |
+| `SocialProofSection` | Testimonial placeholder | Static markup |
+| `WaitlistForm` | Email + optional name, POST to external API | Client Component |
+| `/admin` route | Password gate + waitlist table | Server Component (Supabase query) |
+| `AdminLoginForm` | Password input, sets session cookie | Client Component or Server Action |
+| `PostHogProvider` | Wraps app, initializes SDK | Client Component (providers.tsx) |
+| `middleware.ts` | Fast-path redirect for unauthenticated `/admin` | Edge middleware (cookie check) |
+
+### Anti-Patterns (v1.0 — Still Relevant)
+
+**Proxy the Waitlist API:** POST directly from the browser; the Conjure endpoint is public and handles CORS. No proxy needed.
+
+**Middleware-Only Admin Auth:** Re-verify the session token in the Server Component before any Supabase query. Middleware is fast-path only. (CVE-2025-29927 context.)
+
+**`SUPABASE_SERVICE_ROLE_KEY` in Client Components:** Never prefix with `NEXT_PUBLIC_`; service_role bypasses all Row Level Security.
+
+### Sources (v1.0)
+
+- CVE-2025-29927 Next.js middleware bypass — Vercel postmortem (official)
+- PostHog Next.js docs — https://posthog.com/docs/libraries/next-js (official)
+- Supabase service_role with Next.js Server Components — https://supabase.com/docs/guides/getting-started/quickstarts/nextjs (official)
+
+---
+
+*Architecture research for: Conjure Landing Page v1.1 — scroll-synced sticky FeaturesSection + glass surface redesign*
+*Researched: 2026-03-12*

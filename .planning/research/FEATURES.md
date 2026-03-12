@@ -1,208 +1,275 @@
 # Feature Research
 
-**Domain:** SaaS marketing landing page — creative-professional tool (commercial previs pipeline)
-**Researched:** 2026-03-11
+**Domain:** SaaS marketing landing page — v1.1 visual polish milestone (scroll-synced sticky panel + glass surface redesign)
+**Researched:** 2026-03-12
 **Confidence:** HIGH
 
 ## Context
 
-Conjure is a commercial previs pipeline tool targeting Commercial Directors (users) and Agency Creative Directors (buyers). The page goal is: get a visiting Director or Agency CD from landing to trial signup in one scroll — by showing them the output (a branded Google Slides deck) before explaining how it works. This is a waitlist/trial-acquisition page, not a full marketing site.
+This file covers two overlapping scopes:
 
-Target audience is professionals, not consumers. They are skeptical, time-poor, and have seen dozens of creative tools. They will leave the page if they don't immediately understand the concrete deliverable and why it beats their current process.
+1. **Original v1 landing page features** — retained from prior research (2026-03-11) for continuity
+2. **v1.1 milestone features** — scroll-synced sticky panel (Stripe/Linear pattern) and `.glass-surface` redesign added below
+
+The existing codebase has a working Next.js 15 landing page with: static feature card grid (6 features), a `.glass-surface` utility class (currently broken — blur is invisible on the dark background), a hero section, pricing section, FAQ, social proof placeholder, and waitlist form.
 
 ---
 
-## Feature Landscape
+## Part 1 — v1 Landing Page Features (Prior Research, Retained)
 
 ### Table Stakes (Users Expect These)
 
-Features visitors assume exist on any credible SaaS landing page. Missing these causes immediate bounce or distrust.
-
 | Feature | Why Expected | Complexity | Notes |
 |---------|--------------|------------|-------|
-| Hero section — headline, subhead, primary CTA | First screen must communicate product value and direct action in under 3 seconds | LOW | Brief mandates: show the Google Slides deck output first; the deliverable is the hook. Do not lead with process. |
-| Features section — benefit-driven, not spec-driven | Visitors won't decode feature lists; they need to see how each capability maps to a pain they recognize | LOW | 5 features defined in PROJECT.md: Component Assembly, Character Extraction, Camera Package Presets, Character Pose Sheets, Google Slides Export. Each needs a stated pain → outcome framing. |
-| Pricing section with clear tier structure | Professionals need to qualify budget before committing — missing pricing is a trust signal failure | MEDIUM | 4 tiers (Scout, Director, Producer, Studio). Paid-tier CTAs fall back to trial signup URL until Lemon Squeezy is configured. |
-| Primary CTA — singular conversion goal | Every page section must re-offer the same action; multiple competing CTAs dilute conversion | LOW | CTA is trial signup / waitlist join. Do not add secondary CTAs for social links, blog, demos, etc. in v1. |
-| Waitlist / signup form — email required, name optional | The conversion event. Must be minimal friction. One form field (email) outperforms two fields by 20–40%. | LOW | POST to `conjurestudio.app/api/waitlist`. Name is optional per PROJECT.md. Error and success states required. |
-| Mobile-responsive layout | 60%+ of landing page traffic arrives mobile even in B2B. Broken mobile = immediate bounce. | MEDIUM | Required by PROJECT.md. Every section must be tested at 375px, 768px, 1280px. |
-| Page speed under 2 seconds | Slow-loading pages signal product quality. B2B professionals are unforgiving. | MEDIUM | Astro (or chosen framework) ships nearly zero JS by default — advantage here. No heavy client-side bundles in v1. |
-| Consistent brand tokens throughout | Professional creative buyers will notice inconsistent color or typography immediately — it implies sloppy product | LOW | All colors from OKLCH table in brief. Geist Sans/Mono only. Zero deviation from brand spec. |
-| Social proof section | Without third-party validation, any claim on the page is self-serving; even a placeholder signals intent to show proof | LOW | PROJECT.md specifies `<!-- TESTIMONIAL_REQUIRED -->` placeholder. Section should scaffold the visual container so content can drop in without layout changes. |
-| Analytics instrumentation | Cannot improve what isn't measured; even at launch this is mandatory | LOW | PostHog events: `waitlist_form_submitted`, `waitlist_form_error`, `cta_clicked`, `pricing_tier_viewed`. |
+| Hero section — headline, subhead, primary CTA | First screen must communicate product value and direct action in under 3 seconds | LOW | Brief mandates: show the Google Slides deck output first; the deliverable is the hook. |
+| Features section — benefit-driven, not spec-driven | Visitors won't decode feature lists; they need to see pain → outcome framing | LOW | 5 features defined in PROJECT.md. Each needs a stated pain → outcome framing. |
+| Pricing section with clear tier structure | Professionals need to qualify budget before committing | MEDIUM | 4 tiers (Scout, Director, Producer, Studio). Paid-tier CTAs fall back to trial signup URL until Lemon Squeezy is configured. |
+| Waitlist / signup form — email required, name optional | The conversion event. Minimal friction required. | LOW | POST to `conjurestudio.app/api/waitlist`. Error and success states required. |
+| Mobile-responsive layout | 60%+ of B2B landing page traffic arrives mobile. Broken mobile = immediate bounce. | MEDIUM | Required by PROJECT.md. Must test at 375px, 768px, 1280px. |
+| Brand token fidelity | Creative buyers will notice inconsistent color or type immediately — signals sloppy product | LOW | All colors from OKLCH table in brief. Geist Sans/Mono only. |
+| Social proof section | Without third-party validation, all claims are self-serving | LOW | Ships as `<!-- TESTIMONIAL_REQUIRED -->` placeholder. |
+| Analytics instrumentation | Cannot improve what isn't measured | LOW | 4 PostHog events from PROJECT.md. |
 
 ### Differentiators (Competitive Advantage)
 
-Features that move a credible-but-generic landing page to a converting one. These are specific to Conjure's audience and positioning.
-
 | Feature | Value Proposition | Complexity | Notes |
 |---------|-------------------|------------|-------|
-| Output-first hero — show the Google Slides deck before explaining how it works | Commercial Directors and Agency CDs are deliverable-oriented. A screenshot of the actual output (branded storyboard deck in Google Slides) communicates the entire value prop without a single word of explanation. Competitors (Boords, Previs Pro) lead with interface screenshots, not the finished artifact. | LOW | This is a content decision, not a technical one. Requires one high-quality deck screenshot as hero media. Priority: source this asset early. |
-| "How it works" — 3-step process section | Professionals need to understand the operational model before they'll trial anything. Script → session → branded deck in an afternoon is a simple, strong story. 3 steps maximum. No more. | LOW | Not in PROJECT.md requirements — add it. Converts skeptical "sounds complicated" visitors into form completions. |
-| Outcome-language copy throughout | The ICP avoid list bans all generic SaaS language. Copy that uses production-world vocabulary ("scout," "camera package," "character pose sheet," "director's cut") signals that the product was built by people who understand the job — which is the core trust signal for this audience. | LOW | Already constrained by PROJECT.md. Research confirms copy differentiation is a top conversion lever for niche B2B tools. |
-| FAQ section — 3 to 5 questions | Research shows FAQ near the form CTA removes the last friction for skeptical visitors. Key questions for this audience: "Do I need to know how to draw?", "What happens to my script?", "How is this different from hiring a storyboard artist?", "What's included in the free trial?" | LOW | Not in PROJECT.md requirements — add it. Directly reduces waitlist abandonment by preempting the most common objections. |
-| Success state after form submission | After joining the waitlist, a confirmation state (inline or redirect) that (a) confirms the signup worked and (b) gives a next action (e.g., "Check your email — we'll be in touch when your trial opens") prevents "did that work?" anxiety and improves trust | LOW | Required for error/success handling. The messaging content is the differentiator — make it feel like a conversation, not an autoresponder. |
-| Sticky / always-visible CTA | For a long-scroll page (hero → features → how it works → pricing → social proof → FAQ), visitors who are ready to convert mid-scroll should not have to scroll back to the form | LOW-MEDIUM | Sticky header CTA button or sticky CTA bar at bottom. Implement with minimal JS. Do not implement as a floating modal or popup (anti-feature — see below). |
-| Anchor navigation | For professionals who know what they're looking for, allowing direct jumps to Pricing or Features reduces frustration. Small conversion lift, low cost. | LOW | In-page anchor links only — no full navigation menu (removes exit paths from the page). |
+| Output-first hero — show the Google Slides deck before explaining how it works | Directors and Agency CDs are deliverable-oriented; competitors lead with interface screenshots | LOW | Content decision, not technical. Requires high-quality deck screenshot asset. |
+| "How it works" — 3-step process section | Removes "sounds complicated" objection for borderline visitors | LOW | Not originally in PROJECT.md — added to MVP. Script → Session → Deck. |
+| Outcome-language copy | Production-world vocabulary signals the product was built by people who understand the job | LOW | Already constrained by PROJECT.md ICP avoid list. |
+| FAQ section | Removes last-friction objections before form; well-placed FAQ near CTA is a proven conversion lever | LOW | 3–5 questions targeting: no-drawing objection, data/privacy, difference from hiring an artist, trial scope. |
 
 ### Anti-Features (Commonly Requested, Often Problematic)
 
-Features that look like improvements but reduce conversion or add scope that doesn't serve the page goal.
+| Feature | Why Requested | Why Problematic | Alternative |
+|---------|---------------|-----------------|-------------|
+| Full site navigation header | Feels "complete," professional | Navigation links are exit paths. Every external link reduces conversion. | Anchor links to page sections only. |
+| Popup / exit-intent modal | Captures emails from abandoning visitors | Annoys professional audiences; associates tool with low-quality | FAQ section + sticky CTA handles objection-removal. |
+| Animated / autoplay background video | Impressive for a film-industry tool | 3–6x page load penalty; kills mobile performance | Static hero screenshot + optional user-initiated video below the fold. |
+| Multiple competing CTAs | Broader reach | Dilutes primary conversion goal | One CTA throughout. Research shows single-CTA pages outperform multi-CTA by 20–50%. |
+| Live signup counter | FOMO / social proof | Displays "0" embarrassingly at launch; requires real-time Supabase | Add only after 500+ confirmed signups. |
+
+---
+
+## Part 2 — v1.1 Visual Polish Milestone Features
+
+This milestone replaces the static feature card grid with a scroll-synced sticky panel layout and fixes `.glass-surface` so it reads as actual glass. Two independent sub-problems.
+
+---
+
+### Sub-Problem A: Scroll-Synced Sticky Panel (Stripe/Linear Pattern)
+
+#### What "Stripe/Linear pattern" means
+
+The Stripe and Linear homepages use a two-column layout where one column scrolls (feature text steps) while the opposite column stays sticky (a mockup frame with changing content). As the user scrolls down the text column, the sticky column's content — screenshot, illustration, or video — swaps to match the current feature step. The sticky column uses CSS `position: sticky` with a defined `top` offset; the content swap is driven by JavaScript detecting which text step is currently in the viewport.
+
+This is distinct from:
+- CSS scroll-driven animations (which tie values directly to scroll position / timeline — better for parallax)
+- Full-page pin/scrub effects (GSAP ScrollTrigger pattern — heavier, more complex, not needed here)
+- Tabbed interfaces (user-initiated, not scroll-driven)
+
+#### Table Stakes for this pattern
+
+| Feature | Why Expected | Complexity | Notes |
+|---------|--------------|------------|-------|
+| Sticky browser mockup frame (left or right panel) | Visitors have seen this pattern on Stripe, Vercel, Linear — missing it makes the section feel dated compared to modern SaaS peers | MEDIUM | Pure CSS `position: sticky` with `top` offset. Must define a scroll container (parent element) with enough height for the sticky to work. The sticky element stays within its parent boundaries — the parent must be taller than the viewport height. |
+| Per-feature screenshots that swap without layout shift | The visual panel must change to match the current feature description — no cumulative layout shift (CLS) | MEDIUM | Best implementation: all screenshots pre-loaded, active one set to `opacity: 1`, inactive to `opacity: 0`, with `transition: opacity 300ms ease`. This avoids layout shift entirely. Do not unmount/mount images on swap. |
+| Active step highlighting in text column | Users need a visual signal for which feature step is "current" — otherwise the scroll sync feels disconnected | LOW | Active step gets a distinct text color or left-border accent. Inactive steps are muted (`text-muted-foreground`). Simple CSS class swap. |
+| Smooth opacity crossfade on screenshot swap | Abrupt hard-cuts feel cheap; crossfade reinforces the "polished" impression | LOW | `transition: opacity 200–300ms ease` on each screenshot. Stack all screenshots absolutely positioned in the same container. |
+| Accessible at keyboard/no-scroll | Sticky scroll patterns that only work via mouse scroll are inaccessible | LOW | Ensure each feature's text is fully readable even without the screenshot. The screenshot is an enhancement, not load-bearing content. Alt text on all images. |
+
+#### Differentiators for this pattern
+
+| Feature | Value Proposition | Complexity | Notes |
+|---------|-------------------|------------|-------|
+| Browser mockup chrome (title bar, traffic lights, URL bar) | Frames the screenshots as product UI in context — makes raw screenshots feel like a real product demo rather than isolated images | MEDIUM | Build in pure HTML/CSS — no library needed. DaisyUI `mockup-browser` component or a hand-rolled equivalent. The chrome adds ~40px height overhead — account for this in the sticky panel sizing. |
+| IntersectionObserver-based step detection (not scroll events) | `scroll` event listeners fire continuously and degrade performance; IntersectionObserver fires only when element crosses threshold — no jank | LOW | Use `react-intersection-observer` (`useInView` hook) or native `IntersectionObserver` in a `useEffect`. Configure `rootMargin: "-40% 0px -40% 0px"` (center 20% of viewport triggers swap) for reliable mid-scroll detection. No GSAP or heavy animation library needed. |
+| Scrollama / scrollytelling library as an alternative | If IntersectionObserver implementation becomes complex, Scrollama.js (`react-scrollama` package) is a lightweight wrapper that handles step triggers cleanly | LOW-MEDIUM | `react-scrollama` is available on npm and has Next.js examples. However, it adds a dependency. For 6 feature steps, native IntersectionObserver is sufficient — avoid the dependency unless the native approach proves unreliable. |
+
+#### Anti-Features for this pattern
 
 | Feature | Why Requested | Why Problematic | Alternative |
 |---------|---------------|-----------------|-------------|
-| Full site navigation header | Feels "complete," professional | Navigation links are exit paths. Every link away from the page reduces conversion. Dedicated landing pages remove nav menus entirely — research confirms this is a primary conversion lever. | Anchor links to page sections only. No external links except the trial CTA. |
-| Popup / exit-intent modal | Captures emails from abandoning visitors | Research: popovers annoy professional audiences. Creative-industry ICPs associate popups with low-quality tools. Breaks brand perception for Conjure. | Well-placed sticky CTA + compelling FAQ section removes the need for interruption tactics. |
-| Animated / autoplay background video | Visually impressive, communicates "motion" for a film-industry tool | Performance penalty is severe. Autoplay video raises load time by 3–6x on average, which kills mobile performance and increases bounce rate. | Static hero media (high-quality deck screenshot) + optional 90-second explainer video embedded below the fold, user-initiated. |
-| Multiple conversion goals | Tempting to add "watch demo," "book a call," "download one-pager," "follow on X" | Each competing CTA draws attention away from the primary goal (waitlist signup). Research consistently shows single-CTA pages outperform multi-CTA pages by 20–50%. | One CTA. Everything else defers to v1.1 when the paid tier is live and a separate demo/sales flow may be warranted. |
-| Competitor comparison table | Obvious differentiator question — "how are you different from Boords?" | PROJECT.md explicitly out-of-scopes named competitor comparisons in top-of-funnel copy. Named comparisons in a hero context introduce doubt and prime visitors to research alternatives. | Frame against the manual workflow (hired storyboard artist, shot lists on paper) not named competitors. |
-| Referral / waitlist gamification (position tracking, share-for-priority) | Robinhood-style waitlists show viral growth potential | Appropriate for consumer products. Completely wrong tone for a creative professional B2B tool. Directors and Agency CDs will not share a referral link for queue position. Signals "startup growth hack" over "professional tool." | Simple confirmation messaging that conveys exclusivity of early access without gamification mechanics. |
-| Blog / content section | SEO value, thought leadership | Zero SEO value on a single-page waitlist site that isn't indexed for content yet. Scope creep with no conversion upside in v1. | Defer to when the main Conjure app site has a content strategy. |
-| Live signup counter ("X people on the waitlist") | Social proof signal, creates FOMO | Requires real-time or near-real-time data from Supabase on a public-facing page. Adds complexity for marginal conversion benefit. Also displays "0" embarrassingly at launch before momentum builds. | Static proof: "Early access open to directors and agency CDs." Add counter only after 500+ signups are confirmed. |
-| Chat widget / live chat | Reduces friction for questions | Requires staffing or a bot. Adds 50–100ms to page load (third-party script). No conversational content strategy exists yet. FAQ section serves the same objection-handling function. | FAQ section. |
+| GSAP ScrollTrigger for the pin/scrub effect | Visually impressive; used by agencies for heavy marketing sites | Adds 50KB+ bundle weight. The pin/scrub effect is excessive for a 6-step feature section. Conjure's page goal is conversion speed, not showcase animations. | Pure CSS `position: sticky` + IntersectionObserver. Zero extra dependencies. |
+| Scroll-driven CSS `animation-timeline: scroll()` | Modern, no-JS solution | Browser support is incomplete as of early 2026 (Safari has partial support). Cannot safely use for production content that must work in Safari. | IntersectionObserver with opacity transitions. Works in all browsers. |
+| `react-scrollama` or `react-sticky-box` dependency | Simplified API | 6-step feature scroll does not require a library. These packages add maintenance burden and may lag on Next.js major version updates. The native pattern is 30–50 lines of code. | Native IntersectionObserver in a `'use client'` component. |
+| Auto-play video in the sticky panel | More dynamic than screenshots | Same performance penalty as hero video. Loads 6 videos into the DOM on page load. | Static screenshots. If video is desired, load it lazily only for the active step on user interaction. |
+| Horizontal scroll layout (steps scroll horizontally) | "Novel" interaction | Kills mobile. Horizontal scroll on mobile is universally problematic for feature sections. Stripe and Linear use vertical scroll on desktop, stacked cards on mobile. | Vertical sticky scroll on desktop. Stacked cards (the current pattern) on mobile. |
 
----
-
-## Feature Dependencies
+#### Feature Dependencies for scroll panel
 
 ```
-[Hero section — output-first media]
-    └──requires──> [High-quality deck screenshot asset] (content dependency, not technical)
+[Scroll-synced sticky panel]
+    └──requires──> ['use client' directive on FeaturesSection component]
+                       (currently a Server Component — must convert)
+    └──requires──> [Parent container height > viewport height]
+                       (CSS sticky only works if parent scrolls past the sticky element)
+    └──requires──> [All 6 feature screenshots loaded and sized correctly]
+                       (pre-load all; do not mount/unmount on swap)
+    └──requires──> [IntersectionObserver setup with correct rootMargin]
+                       (rootMargin of "-40% 0px -40% 0px" targets viewport center)
+    └──requires──> [Active index state in React]
+                       (useState to track current step; triggers screenshot opacity swap)
 
-[Waitlist form — email capture]
-    └──requires──> [Success/error state handling]
-    └──requires──> [Analytics instrumentation] (cta_clicked fires before form, form events fire on submit)
+[Browser mockup chrome]
+    └──enhances──> [Sticky panel — screenshot area]
+    └──requires──> [Fixed aspect ratio for screenshot container]
+                       (mockup chrome must have a defined inner content area)
 
-[Pricing section]
-    └──requires──> [CTA per tier] ──fallback──> [Trial signup URL until Lemon Squeezy configured]
-
-[Social proof section]
-    └──requires──> [Testimonial content] (outstanding content dependency — ships as placeholder)
-
-[Sticky CTA]
-    └──enhances──> [Every section below the fold]
-    └──requires──> [Primary CTA defined in hero] (same action, same URL)
-
-[FAQ section]
-    └──enhances──> [Waitlist form conversion] (placed directly above or below the form)
-
-[Admin view at /admin]
-    └──requires──> [Supabase read-only connection string]
-    └──requires──> [ADMIN_PASSWORD env var]
-    └──independent of all public page sections]
-
-[PostHog analytics]
-    └──requires──> [NEXT_PUBLIC_POSTHOG_KEY env var]
-    └──enhances──> [All CTA and form interactions]
+[Mobile fallback — stacked cards]
+    └──requires──> [Responsive CSS: sticky layout hidden on mobile, stacked layout shown]
+                       (md:flex on the two-column layout; mobile uses existing or simplified card grid)
+    └──conflicts──> [Sticky behavior on mobile]
+                       (never apply sticky scroll sync below md breakpoint)
 ```
 
-### Dependency Notes
+#### MVP Definition for scroll panel
 
-- **Hero requires deck screenshot:** The output-first hero is the primary differentiator — sourcing this asset is the first content task. Without it, the hero defaults to a generic illustration or text-only layout, which loses the conversion advantage.
-- **Pricing CTA requires fallback URL:** Lemon Squeezy checkout URLs are not yet configured (v1.3). All paid-tier CTAs must wire to env vars with graceful fallback to `https://conjurestudio.app/auth/signup`.
-- **FAQ enhances form:** Place the FAQ section in the page flow immediately before or after the final form CTA. Research shows FAQ-adjacent form placements improve conversion by removing last-moment objections.
-- **Admin view is independent:** The `/admin` route is a separate page — it shares the framework and Supabase connection but has no dependencies on the public landing page sections. It can be built in any phase without blocking the public page.
+Launch with (v1.1):
+- [ ] `FeaturesSection` converted to `'use client'` — required for IntersectionObserver
+- [ ] Two-column layout: text steps (left or right) / sticky mockup panel (opposite side)
+- [ ] 6 step containers with IntersectionObserver refs, each updating `activeIndex` state
+- [ ] 6 screenshots pre-loaded, crossfade on active index change (opacity transition, not mount/unmount)
+- [ ] Browser mockup chrome wrapping the screenshot area
+- [ ] Active step text highlighting (accent color on active, muted on inactive)
+- [ ] Mobile fallback: single-column stacked layout (hide two-column, show card list below `md`)
 
----
-
-## MVP Definition
-
-### Launch With (v1)
-
-Minimum viable page — what's needed to drive trial signups and validate that the positioning resonates.
-
-- [ ] Hero section — output-first, primary CTA, headline + subhead — *without this, there is no page*
-- [ ] Features section — 5 features, benefit-framed, from approved copy — *establishes credibility and product scope*
-- [ ] How it works — 3-step process (Script → Session → Deck) — *removes "sounds complicated" objection for borderline visitors*
-- [ ] Pricing section — 4 tiers, correct values from POSITIONING.md, CTA per tier with fallback URL — *professionals need to see pricing to qualify*
-- [ ] Waitlist form — email required, name optional, POST to live API, success + error states — *the conversion event*
-- [ ] Social proof section — scaffolded with `<!-- TESTIMONIAL_REQUIRED -->` placeholder — *signals intent; swaps content without layout change*
-- [ ] FAQ section — 3 to 5 questions targeting: no-drawing objection, data/privacy, difference from hiring an artist, free trial scope — *removes last-friction objections before form*
-- [ ] Sticky CTA in header or footer bar — *captures converts who are ready mid-scroll*
-- [ ] PostHog instrumentation — 4 events from PROJECT.md — *day-1 data*
-- [ ] Admin view at `/admin` — password-protected, signup table — *operational, not visitor-facing*
-- [ ] Responsive layout (375px, 768px, 1280px) — *non-negotiable for traffic quality*
-- [ ] Brand token fidelity — OKLCH colors, Geist Sans/Mono — *trust signal for design-literate audience*
-
-### Add After Validation (v1.x)
-
-Features to add once conversion baseline is established and product moves to paid tiers.
-
-- [ ] Testimonial content — swap `<!-- TESTIMONIAL_REQUIRED -->` placeholder with real quotes — *trigger: content becomes available*
-- [ ] Lemon Squeezy checkout URL wiring — replace fallback CTAs with live checkout — *trigger: v1.3 billing setup complete*
-- [ ] Live signup counter — "X directors on the waitlist" — *trigger: 500+ confirmed signups, so the number is credible*
-- [ ] Embedded demo / explainer video — 90 seconds, below the fold, user-initiated — *trigger: video asset is produced*
-
-### Future Consideration (v2+)
-
-Defer until product-market fit is established and a full marketing site strategy is warranted.
-
-- [ ] Blog / content section — *requires content strategy and SEO investment not relevant to a waitlist page*
-- [ ] Case study pages — *requires completed client engagements to document*
-- [ ] Animated onboarding or interactive product tour — *appropriate for a full marketing site, not a single-page waitlist*
-- [ ] Multi-language support — *no evidence of non-English-speaking ICP at this stage*
+Defer:
+- [ ] Step progress indicator (numbered dots or line) — adds visual noise; reconsider after user testing
+- [ ] Keyboard navigation between steps — nice-to-have, not blocking for v1.1
 
 ---
 
-## Feature Prioritization Matrix
+### Sub-Problem B: Glass Surface Redesign
+
+#### Why `.glass-surface` is currently broken
+
+The root cause is structural, not a CSS value tweak: `backdrop-filter: blur()` only blurs the pixels **directly behind** the element. The current Conjure landing page has a near-solid dark background (`oklch(0.04 0 0)` — essentially pure black). There is almost nothing visually varied behind the glass cards, so the blur filter has nothing interesting to work with. The result is a flat, dark rectangle with a thin border — indistinguishable from a regular card.
+
+Three related issues in the current implementation:
+1. **Background too opaque and dark** — `oklch(0.14 0 0 / 0.45)` on a near-black page background produces near-black
+2. **No rich visual content behind the glass** — the `body::before` ambient glow orbs exist, but they are too subtle and too far from the card positions to contribute meaningfully to the blur
+3. **Blur alone on a dark monochrome background produces nothing** — the blur averages dark pixels and returns dark pixels
+
+#### Table Stakes for glass surface redesign
+
+| Feature | Why Expected | Complexity | Notes |
+|---------|--------------|------------|-------|
+| Visible frosted-glass appearance | The `.glass-surface` class name promises a glass effect; cards must actually look different from regular dark cards | MEDIUM | Requires rich visual content behind the element. This is the core structural requirement — no CSS tweak alone fixes it. |
+| Readable text contrast on glass | WCAG AA minimum (4.5:1 for body text) must be maintained over the semi-transparent background | LOW | Text must be `oklch(0.98 0 0)` (near-white). The glass background must not reduce contrast below threshold. |
+| Consistent appearance across Safari and Chrome | `backdrop-filter` on Safari requires `-webkit-backdrop-filter` prefix (required through Safari 17; unprefixed works in Safari 18+) | LOW | Always ship both. Include `@supports (backdrop-filter: blur(1px))` fallback for browsers without support. |
+| No performance degradation | `backdrop-filter` is GPU-intensive; applying to many large elements simultaneously causes frame drops | LOW | Keep blur at 12–20px (sweet spot). Do not apply to elements that cover large areas simultaneously. 6 small cards is acceptable. |
+
+#### Differentiators for glass surface
+
+| Feature | Value Proposition | Complexity | Notes |
+|---------|-------------------|------------|-------|
+| Background noise / grain texture behind glass cards | Grain texture is the best substitute for "content to blur" when the page background itself is minimal. A subtle SVG noise filter or CSS grain pattern placed behind the glass cards gives the blur filter something to work with — producing a visible frosted effect even on dark monochrome pages. | MEDIUM | Apply a noise layer to the section background, not to the card itself. Approaches: CSS `filter: url('#noise')` SVG filter, or a semi-transparent noise PNG/SVG tiled as `background-image`. Keep the noise subtle enough to not interfere with readability. |
+| `backdrop-filter: blur() saturate()` combination | Adding `saturate(180%)` alongside the blur enhances perceived glass depth — the effect amplifies color variation in whatever is behind the glass, making even subtle backgrounds appear richer | LOW | `backdrop-filter: blur(16px) saturate(180%)`. Saturate alone does nothing on truly monochrome backgrounds — it amplifies variation, not creates it. Must be paired with the noise/gradient background approach. |
+| Section-level glow gradient behind glass cards | A stronger, more localized radial gradient in the features section background (not the global body gradient) gives the blur filter visible color to average — resulting in a warm greenish tint in the glass, reinforcing the primary mint brand color | LOW-MEDIUM | Section-level `background` with a radial gradient centered near the card cluster. Can be a CSS `::before` pseudo-element on the `<section>`. This is additive to the existing `body::before` glow. |
+| Inner highlight border (top-edge lighter border) | The current `.glass-surface` definition already has `border-top-color: oklch(0.98 0 0 / 0.22)`. This is the strongest visual cue of the three glass signals (blur, translucency, edge highlight). Increase this to `0.30–0.40` opacity for the redesign. | LOW | Already in the codebase. Just increase top border opacity. High ROI for low effort. |
+| Box shadow with inner glow | A subtle inner shadow `inset 0 1px 0 oklch(0.98 0 0 / 0.10)` combined with an outer shadow `0 4px 24px oklch(0 0 0 / 0.40)` adds depth and separates the card from the background visually even when blur is minimal | LOW | Not in current implementation. Easy to add. Do not use the existing `--glow-hover` (mint glow) on resting state — reserve it for hover. |
+
+#### Anti-Features for glass surface
+
+| Feature | Why Requested | Why Problematic | Alternative |
+|---------|---------------|-----------------|-------------|
+| Increasing blur radius to 40px+ | "More blur = more glass effect" | False. `backdrop-filter: blur(40px)` on a near-black background blurs nothing into nothing. Performance also degrades exponentially above 20px. | Fix the background content first. Keep blur at 12–20px. |
+| White/light glass cards on a dark background | High contrast, visible | This is frosted-glass on a light background — a different design language. Conjure's design system is dark with dark cards; white glass would break brand token fidelity. | Use the dark glass formula: semi-transparent dark card (`oklch(0.14 0 0 / 0.45)`) over a richly textured dark background. |
+| CSS `backdrop-filter: brightness(0.8)` for "dark glass" | Creates a darkening effect | Just makes the blur result darker — still blurs nothing when nothing interesting is behind it. | Use `saturate()` not `brightness()` unless you specifically want a darker result. |
+| Replacing `.glass-surface` with a purely opaque redesign | "Just make it look nice" | Abandons the visual language the design brief calls for. The glass surface is a deliberate brand token (space-grade aesthetic, per the brief). | Fix the structural issue (background content) rather than abandoning the effect. |
+| `will-change: backdrop-filter` | Supposed performance optimization | Can trigger layer promotion and increase memory usage. Not recommended for `backdrop-filter` specifically. | Let the browser decide. Use `transform: translateZ(0)` only if profiling shows compositing issues. |
+
+#### Feature Dependencies for glass surface
+
+```
+[Visible glass effect on .glass-surface cards]
+    └──requires──> [Visual content behind the card element]
+                       (the blur filter can only process pixels that exist behind the element)
+    └──requires──> [Section-level background with noise or gradient variation]
+                       OR
+                   [Global body::before glow strengthened near features section position]
+
+[backdrop-filter browser support]
+    └──requires──> [-webkit-backdrop-filter on all .glass-surface declarations]
+    └──requires──> [@supports fallback for unsupported browsers]
+                       (fallback: semi-opaque solid background, no blur)
+
+[Text readability on glass]
+    └──requires──> [Foreground text at oklch(0.98 0 0) on glass background that stays dark enough]
+                   (contrast ratio must stay above 4.5:1 as background lightens with blur effect)
+```
+
+#### MVP Definition for glass surface
+
+Launch with (v1.1):
+- [ ] Noise/grain texture added to the features section background (not global) — gives the blur filter visual content to work with
+- [ ] `.glass-surface` adjusted: `backdrop-filter: blur(16px) saturate(180%)` with `-webkit-` prefix
+- [ ] Background opacity on `.glass-surface` increased slightly to `oklch(0.18 0 0 / 0.55)` to improve readability
+- [ ] Top border opacity increased from `0.22` to `0.32` for stronger edge highlight
+- [ ] Inner + outer box shadow added to resting state (inset top highlight + bottom shadow)
+- [ ] `@supports` fallback: `background: oklch(0.14 0 0 / 0.85)` for browsers without `backdrop-filter`
+- [ ] Safari `-webkit-backdrop-filter` parity confirmed
+
+Defer:
+- [ ] Section-level radial gradient localized to the features section area — add if noise texture alone is insufficient
+- [ ] Hover glow: already exists as `--glow-hover`; no changes needed
+
+---
+
+## Unified Feature Prioritization Matrix (v1.1 Milestone)
 
 | Feature | User Value | Implementation Cost | Priority |
 |---------|------------|---------------------|----------|
-| Hero — output-first with deck screenshot | HIGH | LOW (technical) / HIGH (asset dependency) | P1 |
-| Waitlist form with success/error states | HIGH | LOW | P1 |
-| Features section — 5 features, benefit-framed | HIGH | LOW | P1 |
-| Pricing section — 4 tiers with fallback CTAs | HIGH | MEDIUM | P1 |
-| Responsive layout | HIGH | MEDIUM | P1 |
-| Brand token fidelity | HIGH | LOW | P1 |
-| PostHog analytics | MEDIUM | LOW | P1 |
-| How it works — 3-step process | HIGH | LOW | P1 |
-| FAQ section — 3 to 5 questions | MEDIUM | LOW | P1 |
-| Social proof section (placeholder) | MEDIUM | LOW | P1 |
-| Sticky CTA | MEDIUM | LOW-MEDIUM | P1 |
-| Admin view at /admin | MEDIUM | MEDIUM | P1 |
-| Testimonial content (real) | HIGH | LOW (technical) / HIGH (content) | P2 |
-| Lemon Squeezy checkout URL wiring | HIGH | LOW | P2 |
-| Live signup counter | LOW-MEDIUM | MEDIUM | P2 |
-| Embedded demo video | MEDIUM | LOW (technical) / HIGH (asset) | P2 |
+| Sticky two-column layout (CSS position:sticky) | HIGH | LOW | P1 |
+| IntersectionObserver active step detection | HIGH | MEDIUM | P1 |
+| Screenshot crossfade on active step change | HIGH | LOW | P1 |
+| Active step text highlighting | MEDIUM | LOW | P1 |
+| Convert FeaturesSection to 'use client' | HIGH | LOW | P1 — blocker for all scroll sync |
+| Mobile fallback (stacked cards) | HIGH | LOW | P1 |
+| Browser mockup chrome | MEDIUM | MEDIUM | P1 |
+| Noise/grain texture behind glass cards | HIGH | MEDIUM | P1 — fixes root cause of broken glass |
+| Glass surface CSS tuning (blur+saturate, borders, shadows) | MEDIUM | LOW | P1 |
+| Safari `-webkit-backdrop-filter` parity | HIGH | LOW | P1 |
+| `@supports` fallback for no-backdrop-filter browsers | MEDIUM | LOW | P1 |
+| Step progress indicator (dots/line) | LOW | MEDIUM | P3 |
+| Keyboard navigation between steps | LOW | MEDIUM | P3 |
 
 **Priority key:**
-- P1: Must have for launch
+- P1: Must have for v1.1 launch
 - P2: Should have, add when possible
 - P3: Nice to have, future consideration
 
 ---
 
-## Competitor Feature Analysis
+## Dependencies on Existing Code
 
-Competitors analyzed: Boords, Previs Pro, Storyboarder.ai, LTX Studio. All target adjacent audiences (film/TV production) but not the specific Commercial Director + Agency CD ICP.
-
-| Feature | Boords | Previs Pro | Our Approach |
-|---------|--------|------------|--------------|
-| Hero media | Interface screenshot | 3D scene screenshot | Actual output artifact (branded Google Slides deck) — shows the deliverable, not the tool |
-| Pricing transparency | Visible on landing | Visible on landing | Visible on landing — 4 tiers, values from POSITIONING.md |
-| Copy tone | Generic SaaS ("collaborate," "streamline") | Technical spec language | Production-world vocabulary — no banned terms from ICP avoid list |
-| Social proof | Testimonials + logos | Not prominent | Scaffolded placeholder ready for real testimonials |
-| How it works | Missing from homepage | Missing from homepage | 3-step section explaining Script → Session → Deck |
-| Trial model | Free tier | Free edition (v3.1) | Trial via waitlist — exclusivity framing, not freemium |
-
-**Key competitive insight:** Boords and Previs Pro both lead with interface screenshots. Neither shows the finished deliverable. This is the primary visual differentiator for Conjure's hero section — show the Google Slides deck output before anything else.
+| Existing Component | Change Required | Impact |
+|--------------------|-----------------|--------|
+| `FeaturesSection.tsx` | Full rewrite — currently a Server Component returning a `<ul>` grid. Needs to become a `'use client'` component with two-column layout, sticky panel, and IntersectionObserver hooks. | HIGH — this is the primary deliverable |
+| `globals.css` `.glass-surface` | Tune CSS values (blur+saturate, border-top opacity, box-shadow). Add `@supports` fallback. | LOW — no structural changes to the rest of the page |
+| `globals.css` `body::before` | Optionally add a section-level background for the features section. Consider adding a localized radial gradient or noise texture. | LOW-MEDIUM — additive, does not break existing glow |
+| `content.ts` `FEATURES` object | No change required — copy and keys are already correct | NONE |
+| Feature screenshot `.webp` files | All 6 already in `/public` and sized. No new assets needed. | NONE |
+| Page layout / `page.tsx` | No change required — `<FeaturesSection />` call signature stays the same | NONE |
 
 ---
 
 ## Sources
 
-- [51 High-Converting SaaS Landing Pages Experts Love 2025 — KlientBoost](https://www.klientboost.com/landing-pages/saas-landing-page/)
-- [27 best SaaS landing page examples — Unbounce](https://unbounce.com/conversion-rate-optimization/the-state-of-saas-landing-pages/)
-- [SaaS Landing Page Best Practices — Heyflow](https://heyflow.com/blog/saas-landing-page-best-practices/)
-- [High-Performing B2B SaaS Landing Page Best Practices — Flow Agency](https://www.flow-agency.com/blog/b2b-saas-landing-page-best-practices/)
-- [Best Landing Pages for Lead Generation — B2B Analysis of 2,000 Companies](https://www.getpassionfruit.com/blog/best-landing-page-analysis-of-2-000-b2b-saas-companies)
-- [Waitlist Landing Page Best Practices — Magic UI](https://magicui.design/blog/waitlist-landing-page)
-- [How to Create a High Converting Waitlist Landing Page — Moosend](https://moosend.com/blog/waitlist-landing-page/)
-- [B2B Conversion Rate Optimization 2025 Strategies — Unbounce](https://unbounce.com/conversion-rate-optimization/b2b-conversion-rates/)
-- [18 B2B SaaS Landing Page Best Practices — SaaS Hero](https://www.saashero.net/design/saas-landing-page-best-practices/)
-- [Best Storyboard Software for Filmmaking 2025 — Filmustage](https://filmustage.com/blog/the-best-storyboard-software-for-filmmaking-in-2025-with-real-world-picks/)
-- [8 Best Platforms for AI-Driven Pre-Production 2025 — Shai Creative](https://shaicreative.ai/8-best-platforms-for-ai-driven-pre-production-in-film-2025/)
+- [Aceternity UI — Sticky Scroll Reveal component pattern](https://ui.aceternity.com/components/sticky-scroll-reveal)
+- [Pudding.cool — Easier scrollytelling with position:sticky](https://pudding.cool/process/scrollytelling-sticky/)
+- [Cruip — How to Create a Sticky On Scroll Effect with JavaScript](https://cruip.com/how-to-create-a-sticky-on-scroll-effect-with-javascript/)
+- [Josh W. Comeau — Next-level frosted glass with backdrop-filter](https://www.joshwcomeau.com/css/backdrop-filter/)
+- [Glassmorphism Design Trend: Complete Implementation Guide 2025](https://playground.halfaccessible.com/blog/glassmorphism-design-trend-implementation-guide)
+- [Nielsen Norman Group — Glassmorphism](https://www.nngroup.com/articles/glassmorphism/)
+- [MDN — backdrop-filter](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/backdrop-filter)
+- [react-intersection-observer — GitHub: thebuilder/react-intersection-observer](https://github.com/thebuilder/react-intersection-observer)
+- [Builder.io — React Intersection Observer: A Practical Guide](https://www.builder.io/blog/react-intersection-observer)
+- [GitHub — russellsamora/scrollama](https://github.com/russellsamora/scrollama)
+- [DaisyUI — mockup-browser component](https://daisyui.com/components/mockup-browser/)
+- [Chrome for Developers — Scroll-driven animations](https://developer.chrome.com/docs/css-ui/scroll-driven-animations)
 
 ---
-*Feature research for: SaaS marketing landing page — Conjure commercial previs pipeline*
-*Researched: 2026-03-11*
+*Feature research for: Conjure Landing Page — v1.1 visual polish milestone (scroll-synced sticky panel + glass surface redesign)*
+*Researched: 2026-03-12*

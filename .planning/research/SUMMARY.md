@@ -1,19 +1,17 @@
 # Project Research Summary
 
-**Project:** Conjure Landing Page
-**Domain:** B2B SaaS waitlist/trial-acquisition landing page — commercial previs pipeline tool
-**Researched:** 2026-03-11
+**Project:** Conjure Landing Page — v1.1 Visual Polish
+**Domain:** SaaS marketing landing page — scroll-synced sticky panel + glass surface redesign
+**Researched:** 2026-03-12
 **Confidence:** HIGH
-
----
 
 ## Executive Summary
 
-The Conjure Landing Page is a single-conversion marketing page targeting Commercial Directors and Agency Creative Directors. Its sole job is to move a skeptical, time-poor professional from first scroll to waitlist signup. Research confirms the page should prioritize showing the deliverable (a branded Google Slides deck screenshot) before explaining how the product works — this is the primary differentiator against Boords and Previs Pro, which both lead with interface screenshots. The conversion model is simple: hero → features → how it works → pricing → FAQ → form. Every design, copy, and technical decision should protect this funnel.
+The v1.1 milestone is a focused visual polish pass on an already-functional Next.js 15 landing page. The work is scoped to two independent changes: replacing the static `FeaturesSection` card grid with a scroll-synced sticky panel (the Stripe/Linear two-column pattern), and repairing the broken `.glass-surface` utility so it renders as genuine frosted glass rather than a flat dark rectangle. Both problems are well-understood and have documented solutions — this is not exploratory work. The recommended approach uses CSS `position: sticky` for the panel layout (zero JS for the sticky behavior itself), `IntersectionObserver` via `react-intersection-observer` for active-step detection (one small dependency, no animation engine), and a structural fix to the glass effect by introducing visual noise behind the cards rather than tuning CSS values that cannot work on a featureless dark background.
 
-**Framework decision — Next.js 15, not Astro:** STACK.md recommends Astro for its zero-JS-by-default output, and this is technically sound for a pure static marketing page. ARCHITECTURE.md recommends Next.js. The synthesis resolves in favor of Next.js 15 for one overriding reason: the developer already knows it at depth (the main Conjure app is Next.js 15), and the admin route requires server-side Supabase queries, cookie-based JWT auth, and middleware patterns the developer has already shipped. Astro's hybrid SSR mode would require learning a second framework's SSR model, adapter configuration, and auth patterns — for the same outcome. The JS payload difference is real but marginal for this use case: the public page will be almost entirely Server Components, with WaitlistForm and PricingSection as the only Client Components. Astro remains the technically superior choice for a pure static site; Next.js is the correct pragmatic choice here given the cross-repo familiarity and admin complexity.
+The highest-confidence finding from research is that the glass effect is broken for a structural reason, not a CSS value problem: `backdrop-filter: blur()` has nothing to work with against a near-black monochrome background. Adding a noise or grain texture behind `.glass-surface` cards gives the blur filter visible pixels to average, producing a real frosted effect at any reasonable blur radius. Separately, a confirmed Safari bug (mdn/browser-compat-data #25914) means CSS variables cannot be used on `-webkit-backdrop-filter` in any Safari version — the current codebase has this bug in both `globals.css` and `Header.tsx`, and both must be patched with hardcoded pixel values.
 
-The critical security concern is CVE-2025-29927 (CVSS 9.1, March 2025): Next.js middleware can be bypassed via the `x-middleware-subrequest` header on unpatched versions. This affects the admin route directly. The mitigation is mandatory: re-verify the JWT in the Server Component before any Supabase query, use Next.js >=15.2.3, and treat middleware as a redirect helper only — not a security gate. The second cross-project dependency is CORS: the Conjure app's `/api/waitlist` route must return `Access-Control-Allow-Origin` headers with the landing page's exact origin. This is a prerequisite for the waitlist form to function from any non-localhost URL and must be addressed in the Conjure app repo before the landing page form is wired.
+The primary risk is `position: sticky` silently failing due to ancestor constraints. The existing `FadeInWrapper` that wraps `FeaturesSection` in `page.tsx` applies `transform: translateY()`, which creates a new CSS containing block and breaks sticky positioning entirely. Removing `FadeInWrapper` from around `FeaturesSection` is the correct fix and is low-risk since the section is long enough to already be in view before the user reaches it. All other risks are manageable with standard patterns documented in ARCHITECTURE.md.
 
 ---
 
@@ -21,129 +19,123 @@ The critical security concern is CVE-2025-29927 (CVSS 9.1, March 2025): Next.js 
 
 ### Recommended Stack
 
-**Next.js 15 App Router** with Tailwind CSS v4, TypeScript 5, and a minimal set of supporting libraries. The stack is deliberately thin: no ORM (direct Supabase queries), no component library beyond shadcn/ui if needed, no React framework just for animation. See `.planning/research/STACK.md` for full installation guide and alternatives considered.
+The baseline stack (Next.js 15/16, React 19, Tailwind v4, Vitest + RTL) requires no changes for this milestone. One new runtime dependency is recommended: `react-intersection-observer@^10.0.3`, which wraps native `IntersectionObserver` with a clean React hook API (`useInView`). It is React 19 compatible, adds minimal bundle weight beyond its own ~5kB, and avoids the manual `useEffect`/`useRef` boilerplate of the raw Observer API. All other scroll and layout primitives required for v1.1 are browser-native. See `.planning/research/STACK.md` for full alternatives considered.
 
 **Core technologies:**
-- **Next.js 15 (App Router):** Framework — developer already knows it; server components handle the admin Supabase query; middleware handles fast-path redirect; same patterns as main Conjure app
-- **Tailwind CSS v4 (Vite plugin):** Utility styling — OKLCH color support is first-class and required for brand tokens; use `@tailwindcss/vite` directly, NOT the deprecated `@astrojs/tailwind` (irrelevant in Next.js, but the v4 Vite plugin pattern applies)
-- **TypeScript 5:** Type safety — strict mode; typed env var accessors in `lib/env.ts`
-- **motion (v12.x, vanilla `animate()`):** Scroll-triggered animations — no React island needed; works in `<script>` tags; smaller than GSAP for this use case
-- **@supabase/supabase-js (v2.x):** Admin DB queries — server-only, service_role key, auth options disabled; used exclusively in the `/admin` Server Component
-- **posthog-js:** Analytics — already in use on the Conjure app; captures `waitlist_form_submitted`, `waitlist_form_error`, `cta_clicked`, `pricing_tier_viewed`; initialize once in root layout
+- `react-intersection-observer@^10.0.3`: active-step detection — wraps `IntersectionObserver` with `useInView` hook, eliminates scroll listener boilerplate, React 19 compatible
+- CSS `position: sticky`: sticky panel layout — GPU-composited, zero JS involvement, no jitter
+- CSS `backdrop-filter` with hardcoded `-webkit-` values: glass surface blur — must hardcode `blur(18px)` on the webkit prefix line; CSS variables fail on `-webkit-backdrop-filter` in all Safari versions
+- `@supports (backdrop-filter: blur(1px))` fallback: graceful degradation for ~3% of browsers without support
 
-**Critical version requirement:** `next` must be `>=15.2.3` (CVE-2025-29927 patch). Verify `package.json` before shipping the admin route.
+**Critical version notes:**
+- Tailwind v4 does not reliably emit `-webkit-backdrop-filter` in all build configurations (confirmed open bug, August 2025, still open March 2026). The webkit patch must go in `globals.css` directly — no Tailwind utility covers it.
+- `react-intersection-observer` v10 is current stable. The `useInView` API is backward-compatible with v9.
 
 ### Expected Features
 
-Research confirms 12 features for v1 launch (all P1). See `.planning/research/FEATURES.md` for full prioritization matrix and competitor analysis.
+**Must have — v1.1 launch blockers (all P1):**
+- `FeaturesSection` converted to `'use client'` — prerequisite for all scroll logic
+- Two-column sticky layout: scrolling feature text steps (left) / sticky screenshot panel (right)
+- `IntersectionObserver` active-step detection with `rootMargin: "-40% 0px -40% 0px"` (viewport-center trigger)
+- Screenshot crossfade on active-step change — all 6 images pre-rendered in DOM, `opacity: 0/1` toggled, never mount/unmount
+- Active step text highlighting — accent color on active, muted on inactive
+- Mobile fallback — stacked single-column layout below `md` breakpoint (hide two-column, show card list)
+- Browser mockup chrome wrapping the screenshot area
+- Noise/grain texture behind `.glass-surface` cards — fixes the root structural cause of the invisible glass effect
+- `.glass-surface` CSS tuning: `blur(16px) saturate(180%)`, increased border-top opacity to `0.32`, inner + outer box shadow
+- Safari `-webkit-backdrop-filter: blur(18px)` hardcoded in both `globals.css` and `Header.tsx`
+- `@supports` fallback for no-`backdrop-filter` browsers
 
-**Must have (table stakes) — all P1:**
-- Hero section with output-first media (Google Slides deck screenshot), headline, and primary CTA
-- Features section — 5 features, benefit-framed using production vocabulary from brief
-- Pricing section — 4 tiers (Scout, Director, Producer, Studio), CTA per tier with env var fallback to trial signup URL
-- Waitlist form — email required, name optional, POST to `conjurestudio.app/api/waitlist`, success + error states
-- Mobile-responsive layout — tested at 375px, 768px, 1280px
-- Brand token fidelity — OKLCH colors, Geist Sans/Mono, zero hex approximations
-- PostHog instrumentation — 4 events from PROJECT.md
-- Admin view at `/admin` — password-protected, waitlist table, server-side only
+**Defer to v1.2+:**
+- Step progress indicator (numbered dots or line) — adds visual noise; reconsider after user testing
+- Keyboard navigation between steps — accessibility enhancement, not blocking for v1.1
+- Section-level localized radial gradient — add only if noise texture alone proves insufficient
 
-**Should have (differentiators) — also P1:**
-- "How it works" — 3-step process section (Script → Session → Deck); not in PROJECT.md but research confirms it removes the primary skeptic objection
-- FAQ section — 3–5 questions targeting the no-drawing objection, data/privacy, hired-artist comparison, trial scope; converts borderline visitors immediately before the form
-- Social proof section — scaffolded with `TESTIMONIAL_REQUIRED` placeholder; real content drops in without layout changes
-- Sticky CTA — header bar or bottom bar; minimal JS; no popups
-
-**Defer (v1.x, post-validation):**
-- Real testimonial content — swap in when available
-- Lemon Squeezy checkout URL wiring — replace fallback CTAs when billing is configured (v1.3)
-- Live signup counter — add after 500+ confirmed signups to avoid embarrassing "0" at launch
-- Embedded demo/explainer video — add when video asset is produced
-
-**Anti-features to avoid (documented in research):** Full site navigation (exit paths), popup/exit-intent modals (wrong tone for this ICP), autoplay background video (performance), multiple competing CTAs, named competitor comparison table, waitlist gamification (referral mechanics are consumer patterns, wrong for directors and agency CDs).
+**Anti-features to avoid:**
+- GSAP ScrollTrigger — 50KB+ overkill for a 6-step pattern; CSS sticky + IntersectionObserver does the same job
+- `scroll` event listeners for active-step — fires on every pixel, main-thread jank, requires manual debounce
+- CSS `animation-timeline: scroll()` — incomplete Safari support as of early 2026
+- `react-scrollama` / `react-sticky-box` — unnecessary dependency for 6 steps; native pattern is ~30 lines
+- `will-change: transform` on multiple elements simultaneously — exhausts GPU compositor layers on mobile
 
 ### Architecture Approach
 
-Single-page marketing experience backed by a protected admin route, both deployed as a standalone Vercel project separate from the Conjure app. The public page is almost entirely Server Components — only WaitlistForm and PricingSection require `'use client'` (for fetch and PostHog events respectively). The admin route uses double-verification: middleware for fast-path redirect (cookie presence only), Server Component for cryptographic JWT verification before any Supabase query runs. The waitlist form POSTs directly from the browser to the Conjure app's endpoint with no proxy — this is correct and requires CORS headers on the Conjure app side. See `.planning/research/ARCHITECTURE.md` for full component diagram, data flow, and code patterns.
+The redesign touches exactly one section (`FeaturesSection`) and one global utility (`.glass-surface`). All other sections (Header, HeroSection, HowItWorksSection, PricingSection, FAQSection, WaitlistSection, Footer) are untouched. `activeIndex` (integer 0–5) is the single piece of state; it lives in `FeaturesSection` and flows down as props to both `FeatureNav` and `FeaturePanel`. The `useScrollSpy` hook owns the `IntersectionObserver` and fires `setActiveIndex` via callback — it does not own state itself. Click-driven navigation in `FeatureNav` calls the same setter and also scrolls the sentinel into view to keep scroll position consistent with displayed state. See `.planning/research/ARCHITECTURE.md` for full component diagram, data flow, and working `useScrollSpy` code.
 
 **Major components:**
-1. `app/page.tsx` — Root landing page, Server Component shell, stacks all marketing sections
-2. `WaitlistForm` (`'use client'`) — Cross-origin POST to `conjurestudio.app/api/waitlist`; form state, success/error states, PostHog events
-3. `PricingSection` (`'use client'`) — 4-tier table, env var checkout URLs via `lib/env.ts`, PostHog `pricing_tier_viewed` event
-4. `app/admin/page.tsx` — Server Component; JWT verify → Supabase query → render table
-5. `middleware.ts` — Edge; cookie presence check only; redirects to `/admin/login`; NOT the security boundary
-6. `lib/supabase-admin.ts` — Service_role client; server-only; never imported in client components
-7. `lib/env.ts` — Typed env var accessors; checkout URL fallback logic centralized here
-8. `PostHogProvider` (`'use client'`) — Wraps `app/layout.tsx`; single init with guard
+1. `FeaturesSection` (rewrite to `'use client'`) — owns `activeIndex` state; renders two-column grid; mounts scroll observers via `useScrollSpy`; removes `FadeInWrapper` from parent `page.tsx`
+2. `FeaturePanel` (new) — receives `activeIndex` prop; pre-renders all 6 screenshots with opacity toggling; sticky positioning via pure CSS
+3. `FeatureNav` (new, optional) — receives `activeIndex` + `onSelect`; renders feature title list with active indicator; click triggers scroll + state update
+4. `useScrollSpy` (new hook) — attaches `IntersectionObserver` to each feature sentinel `<div>`; calls `onActiveChange(i)` on intersection; `observer.disconnect()` in `useEffect` cleanup
+5. `.glass-surface` in `globals.css` (modify) — add noise background to section, fix `-webkit-backdrop-filter`, tune blur/border/shadow values
 
-**Cross-repo dependency:** CORS headers must be configured on `conjurestudio.app/api/waitlist` before the form can be wired. This is a Conjure app task, not a landing page task.
+**Recommended file additions:**
+- `src/hooks/useScrollSpy.ts`
+- `src/components/features/FeaturePanel.tsx`
+- `src/components/features/FeatureNav.tsx`
+
+**Build order:** glass fix (Step 1) → `useScrollSpy` hook (Step 2) → `FeaturePanel` (Step 3) → `FeatureNav` (Step 4) → full `FeaturesSection` rewrite (Step 5) → remove `FadeInWrapper` in `page.tsx` (Step 6) → QA pass (Step 7).
 
 ### Critical Pitfalls
 
-Research identified 7 pitfalls. Top 5 in priority order:
+Research identified 11 v1.1-specific pitfalls. Top 5 in impact order:
 
-1. **Admin middleware-only auth (CVE-2025-29927, CVSS 9.1)** — The `/admin` route MUST re-verify the JWT in the Server Component body, not only in middleware. Middleware is a redirect helper. An attacker can bypass it with the `x-middleware-subrequest` header on unpatched Next.js. Mitigation: pin `next>=15.2.3`; use `jwtVerify` (jose) inside `app/admin/page.tsx` before any Supabase call; use `crypto.timingSafeEqual` for password comparison in the auth route.
+1. **`FadeInWrapper` transform breaks `position: sticky`** — `FadeInWrapper` applies `transform: translateY()` on `FeaturesSection`. A CSS `transform` on an ancestor creates a new containing block; `position: sticky` pins to that ancestor instead of the viewport. The sticky panel will not stick. Fix: remove `FadeInWrapper` from around `FeaturesSection` in `page.tsx` before writing any sticky layout code. Audit all ancestors up to `<body>` for `transform`, `filter`, `will-change: transform`, and `contain`.
 
-2. **CORS rejection on waitlist form POST** — The form POSTs cross-origin to `conjurestudio.app/api/waitlist`. If CORS headers are absent, the browser blocks the response and submissions silently fail. Mitigation: add `OPTIONS` handler + `Access-Control-Allow-Origin: [exact landing page origin]` header to the Conjure app's route. Test from the deployed URL, not localhost — localhost can mask CORS failures.
+2. **Safari CSS variable rejection on `-webkit-backdrop-filter`** — Safari 18.3 and all earlier versions silently ignore `backdrop-filter: blur(var(--glass-blur))` on the `-webkit-`-prefixed property. The glass renders as a flat, transparent panel in Safari. The current codebase has this bug in both `globals.css` and `Header.tsx`. Fix: hardcode `-webkit-backdrop-filter: blur(18px)` on both. Keep the unprefixed `backdrop-filter: blur(var(--glass-blur))` for Chrome/Firefox, where variables work fine.
 
-3. **Brand color fidelity via hex approximation** — Tailwind v4 uses OKLCH natively. Developers defaulting to hex (#9aff8f instead of `oklch(0.92 0.18 142)`) get a visually duller result on wide-gamut displays and violate the brief's explicit constraint. Mitigation: define all brand tokens in `@theme` as `oklch()` values copied verbatim from the brief; grep for `#` in `@theme` before each phase is marked complete.
+3. **Glass effect is invisible on a dark monochrome background** — `backdrop-filter: blur()` averages the pixels behind the element. The near-black page background (`oklch(0.04 0 0)`) has no visual variation, so the blur averages dark into dark regardless of blur radius. Fix: add a noise or grain texture behind `.glass-surface` cards at the section level. This gives the blur filter content to process, producing a real frosted effect.
 
-4. **Hero image LCP failure** — The deck screenshot is the LCP element. An unoptimized PNG at full resolution will fail the 2.5-second LCP threshold on mobile. Mitigation: use Next.js `<Image>` with `priority` prop; export at 2x display width (not Retina); target <200KB after compression. This must be applied on first implementation — not as a later polish pass.
+4. **`IntersectionObserver` fires for all elements on initial mount** — On first observation, the IO spec fires a callback for every observed element. Without a guard, this sets `activeIndex` to the last feature on page load. Fix: initialize `activeIndex` to 0 in state and either (a) add a `hasInitialized` ref that skips the first callback batch, or (b) check `entry.boundingClientRect.top` against viewport height to determine initial above/below-fold position.
 
-5. **Copy drift and banned words** — Approved copy gets paraphrased during implementation; banned words ("AI-powered," "platform," "seamless," "intuitive," "workflow automation," etc.) reappear. Mitigation: create `src/lib/copy.ts` constants file at project start; wire all user-facing strings from this file; add banned-word grep as pre-commit hook.
+5. **`observer.disconnect()` missing from `useEffect` cleanup** — `IntersectionObserver` continues running after component unmount. React 18 Strict Mode double-invokes effects, causing two observers to run simultaneously and producing flickering active states in development. Fix: always return `() => observer.disconnect()` from the `useEffect` in `useScrollSpy`. This is required, not optional.
 
 ---
 
 ## Implications for Roadmap
 
-Research suggests 4 phases based on build-order dependencies identified in ARCHITECTURE.md.
+The milestone naturally splits into two parallel tracks (glass fix and scroll panel) with one dependency constraint (the `FadeInWrapper` removal in Phase 1 is required before Phase 3 sticky integration). The recommended order follows the ARCHITECTURE.md build sequence.
 
-### Phase 1: Foundation and Design System
-**Rationale:** Brand tokens, env var structure, and PostHog initialization have zero dependencies and are required by every subsequent component. Locking these first eliminates the risk of hex-color drift and copy drift propagating through all later work.
-**Delivers:** Deployed skeleton — Vercel project configured, `globals.css` with OKLCH brand tokens, `lib/env.ts` with checkout URL fallbacks, `app/layout.tsx` with PostHogProvider, Geist font loading, brand-consistent base scaffold
-**Addresses:** Brand token fidelity (all P1 table stakes), analytics instrumentation
-**Avoids:** Hex approximation pitfall (lock OKLCH tokens before any component work), PostHog double-init pitfall (single init in layout), checkout URL `undefined` pitfall (centralized in `lib/env.ts` from day one)
-**Research flag:** Standard patterns — skip phase research. Next.js layout + Tailwind v4 setup is well-documented.
+### Phase 1: Foundation Fixes
+**Rationale:** Two prerequisite changes that unblock everything else. Neither requires new components. Both are independently verifiable before scroll work begins. The Safari backdrop-filter bug affects the entire page (Header and all `.glass-surface` cards), so patching it first means all subsequent browser testing is accurate.
+**Delivers:** Working glass effect visible in Safari; `-webkit-backdrop-filter` bug patched in `globals.css` and `Header.tsx`; `@supports` fallback in place; `FadeInWrapper` removed from `FeaturesSection` in `page.tsx` so sticky positioning will work.
+**Addresses:** Glass surface MVP (noise texture, CSS tuning, `@supports` fallback, `-webkit-` fix)
+**Avoids:** Pitfall V1 (transform ancestor breaks sticky), Pitfall V6 (nested backdrop-filter stacking), Safari variable rejection
 
-### Phase 2: Public Page — Static Sections and Waitlist Form
-**Rationale:** Static sections (Hero, Features, How It Works, Social Proof, FAQ) have no interactivity dependencies and can be built before the admin route. The waitlist form is the conversion event and must be wired to the live API — but this requires the CORS prerequisite to be completed in the Conjure app repo first.
-**Delivers:** Full public-facing page — all 8 visible sections rendered, waitlist form wired to live API with success/error states, responsive at 375/768/1280px, PostHog events firing on CTAs and form
-**Addresses:** Hero (output-first deck screenshot), Features section, How It Works, Pricing with fallback CTAs, Social Proof placeholder, FAQ, Waitlist form, Sticky CTA, Responsive layout
-**Uses:** Next.js Server Components for static sections, `'use client'` for WaitlistForm and PricingSection, motion vanilla animations for scroll reveals, Next.js `<Image>` with `priority` for hero
-**Avoids:** LCP failure (priority prop + compressed asset on first implementation), copy drift (constants file from Phase 1)
-**Cross-repo prerequisite:** CORS headers on `conjurestudio.app/api/waitlist` must be confirmed before the form is marked complete
-**Content prerequisite:** Hero deck screenshot asset (branded Google Slides deck) is the critical path content dependency — this is the most important asset to source. Without it, the hero defaults to a placeholder and loses its primary conversion advantage.
-**Research flag:** Standard patterns for sections. Form integration needs verification against the live API response shape.
+### Phase 2: Scroll Infrastructure (Parallel with Phase 1)
+**Rationale:** The hook and sub-components have no dependency on Phase 1 changes. They can be built in parallel and each is independently testable with hardcoded props before integration.
+**Delivers:** `useScrollSpy` hook (with init guard + cleanup), `FeaturePanel` component (pre-renders all 6 screenshots, opacity toggle), `FeatureNav` component (title list with active indicator) — all verified with hardcoded state before wiring.
+**Uses:** `react-intersection-observer` (one new install), native `IntersectionObserver` pattern with `observer.disconnect()` cleanup
+**Implements:** `useScrollSpy`, `FeaturePanel`, `FeatureNav` from architecture plan
+**Avoids:** Pitfall V3 (init-mount fire guard built into hook), Pitfall V9 (observer cleanup included from the start)
 
-### Phase 3: Admin Route
-**Rationale:** The admin route is fully independent of the public page sections and can be built in any order, but it carries the highest security risk. Building it as a focused phase ensures CVE-2025-29927 mitigations are applied deliberately, not retrofitted.
-**Delivers:** Password-protected `/admin` with JWT auth, Supabase waitlist table view, login form, defense-in-depth auth (middleware fast-path + Server Component re-verify)
-**Addresses:** Admin view requirement (P1)
-**Implements:** `middleware.ts`, `app/api/admin-auth/route.ts`, `app/admin/login/page.tsx`, `app/admin/page.tsx`, `lib/supabase-admin.ts`
-**Avoids:** CVE-2025-29927 (jwt verify in Server Component, not middleware-only); service_role key scope leak (server-only import, no `NEXT_PUBLIC_` prefix); timing attack on password comparison (`crypto.timingSafeEqual`)
-**Research flag:** Standard patterns — the auth pattern (jose JWT + httpOnly cookie) is well-documented. Skip phase research.
+### Phase 3: FeaturesSection Integration
+**Rationale:** Wire the scroll infrastructure into the full section rewrite. This is the primary deliverable. Depends on Phase 1 (FadeInWrapper removed) and Phase 2 (components available). This is the highest-risk step — the two-column layout, sticky behavior, mobile fallback, and scroll sync must all work together.
+**Delivers:** Complete two-column sticky layout with live scroll sync, screenshot crossfade, active step highlighting, browser mockup chrome, mobile fallback (stacked cards below `md`).
+**Addresses:** All P1 scroll panel features from FEATURES.md
+**Avoids:** Pitfall V4 (fast scroll — threshold array on IO), Pitfall V5 (sticky container height vs. scroll distance), Pitfall V7 (z-index stacking contexts from backdrop-filter), Pitfall V8 (`dvh` units, not `vh`), Pitfall V10 (`will-change` overuse), Pitfall V11 (no scroll event listeners — use IO only)
 
-### Phase 4: QA, Performance, and Launch Validation
-**Rationale:** Responsive and performance work deferred to a final phase to avoid constant re-testing as sections are built. The "looks done but isn't" checklist from PITFALLS.md provides the exit criteria.
-**Delivers:** Lighthouse LCP <2.5s on mobile, WCAG contrast checks on all OKLCH pairs, physical iPhone Safari test (no horizontal scroll, no clipped CTAs), PostHog event deduplication confirmation, banned-word grep clean, CORS verified from deployed URL, admin bypass test
-**Avoids:** Mobile dark theme breakdowns (iOS Safari `100dvh`, OKLCH on OLED), PostHog duplicate events, CORS failures masked by localhost testing
-**Research flag:** Standard QA patterns. No research needed.
+### Phase 4: QA and Cross-Browser Verification
+**Rationale:** Several failure modes are only visible on specific hardware or browsers. Chrome DevTools device simulation does not accurately reproduce iOS Safari `backdrop-filter` or rubber-band scroll behavior. QA must include a physical device pass.
+**Delivers:** Verified behavior in Safari desktop (blur rendering, sticky), verified on physical iOS (dvh height, fast scroll, rubber-band deceleration), accessibility check on FeatureNav buttons, visual confirmation that glass effect is visible and text contrast passes WCAG AA.
+**Avoids:** Shipping invisible-glass bug to Safari users, shipping broken sticky to iOS users
 
 ### Phase Ordering Rationale
 
-- Foundation must come first: every component references brand tokens and env var accessors — building sections before locking these causes rework
-- Static sections before admin: the admin route is independent but higher risk; completing the public page first lets it be used for content review while admin is hardened
-- QA as a discrete final phase: responsive testing and performance audits are most useful when the page is complete, not done section-by-section (which creates re-test overhead)
-- CORS and the deck screenshot are external prerequisites for Phase 2 — these should be tracked as blockers before Phase 2 begins
+- Phases 1 and 2 can run in parallel — glass fix and scroll infrastructure have no shared dependencies.
+- Phase 3 strictly requires Phase 1 (`FadeInWrapper` removed) and Phase 2 (components built) before the integration step begins.
+- Phase 4 must follow Phase 3 — cross-browser QA is only meaningful on complete integration.
+- Glass fix is sequenced in Phase 1 (not Phase 3) because the Safari blur bug affects the entire page, including the Header — fixing it early ensures all intermediate testing is accurate.
 
 ### Research Flags
 
-Phases likely needing deeper research during planning:
-- **Phase 2 (Form Integration):** The Conjure app's `/api/waitlist` response shape (success, duplicate, error codes) needs to be confirmed from the actual route implementation before the form's success/error logic is designed. This is a code-read task, not external research.
+Phases with standard, well-documented patterns (skip `/gsd:research-phase`):
+- **Phase 1 (Foundation Fixes):** Both the Safari backdrop-filter fix (specific CSS values confirmed from MDN + GitHub issues) and the noise-texture approach are concrete, specifiable changes. No ambiguity.
+- **Phase 2 (Scroll Infrastructure):** `IntersectionObserver` + `useScrollSpy` pattern is fully specified with working example code in ARCHITECTURE.md. `react-intersection-observer` v10 API is stable.
+- **Phase 4 (QA):** Manual testing checklist — no research needed, only execution.
 
-Phases with standard patterns (skip research-phase):
-- **Phase 1 (Foundation):** Next.js 15 + Tailwind v4 setup is official-docs-documented; no research needed
-- **Phase 3 (Admin Route):** Cookie-based JWT auth with jose is a well-established Next.js pattern; CVE mitigations are documented by Vercel
-- **Phase 4 (QA):** Standard Lighthouse + physical device testing
+Phases that may need attention during planning:
+- **Phase 3 (FeaturesSection Integration):** The browser mockup chrome component (hand-rolled HTML/CSS) has no final markup specified in research. DaisyUI `mockup-browser` is noted as an option but is not a project dependency. Define the chrome markup (title bar, traffic lights, URL bar dimensions) before beginning layout work. Low risk but worth pre-deciding.
 
 ---
 
@@ -151,47 +143,45 @@ Phases with standard patterns (skip research-phase):
 
 | Area | Confidence | Notes |
 |------|------------|-------|
-| Stack | HIGH | All major decisions verified against official docs or current npm data; framework conflict resolved with clear rationale |
-| Features | HIGH | Research grounded in 11 external sources including Unbounce, KlientBoost, and direct competitor analysis; feature list aligns with PROJECT.md |
-| Architecture | HIGH | CVE sourced from official Vercel postmortem and Datadog Security Labs; Supabase and PostHog patterns from official docs |
-| Pitfalls | HIGH | All 7 pitfalls verified against official docs, CVE reports, PostHog issue tracker |
+| Stack | HIGH | All claims verified against official sources — npm, MDN compat data, GitHub issues on Tailwind and react-intersection-observer repos. Safari variable bug confirmed via mdn/browser-compat-data issue #25914 (March 2025). |
+| Features | HIGH | Feature scope is tightly constrained to the current codebase. Anti-features are backed by specific technical rationale (bundle size, browser compat gaps, performance). Priority matrix is explicit with P1/P3 classification. |
+| Architecture | HIGH | Based on direct codebase read of all affected files plus spec-level references (CSS containing block spec, MDN IntersectionObserver spec). `useScrollSpy` example code in ARCHITECTURE.md is production-quality with cleanup included. |
+| Pitfalls | HIGH | All 11 v1.1 pitfalls verified against official specs or confirmed GitHub issues. iOS `100vh`/`dvh` behavior, IO initial-fire behavior, transform containing-block behavior, and Tailwind v4 webkit-prefix bug are all spec- or issue-documented. |
 
 **Overall confidence:** HIGH
 
 ### Gaps to Address
 
-- **Conjure app CORS status:** Unknown whether `conjurestudio.app/api/waitlist` currently has CORS headers configured. Must be verified against the Conjure app source before Phase 2 form wiring. This is a cross-repo dependency that cannot be resolved from the landing page repo alone.
-- **Waitlist API response shape:** The exact response body, status codes for duplicate submissions, and error formats from the live `/api/waitlist` endpoint should be confirmed by reading the Conjure app route before designing the form's error/success state logic.
-- **Hero screenshot asset:** The branded Google Slides deck screenshot is not a technical gap but a content prerequisite. Without it, the output-first hero — the primary conversion differentiator — cannot be implemented. Sourcing this asset is the first task of Phase 2 and should begin immediately.
-- **ADMIN_JWT_SECRET rotation policy:** No decision has been documented on how often the admin JWT secret is rotated or how the landing page's admin session is invalidated. This is low urgency (single-user internal tool) but should be noted before the admin route ships.
+- **Browser mockup chrome design:** Research identifies DaisyUI `mockup-browser` as a reference but does not specify exact markup or sizing for a hand-rolled implementation. Decide during Phase 3 planning: use DaisyUI (adds a dependency) or hand-roll (define chrome dimensions — title bar height ~32px, traffic lights, URL bar). Either path works; decide before starting layout.
+- **Noise texture implementation method:** Research identifies noise/grain as the structural fix for broken glass but defers the specific approach to implementation. Three options are valid: SVG `<filter>` with `feTurbulence`, tiled noise PNG as `background-image`, or CSS pseudo-element. Any works — pick based on authoring convenience during Phase 1.
+- **`FeatureNav` inclusion decision:** Research marks `FeatureNav` as optional. Whether to include a clickable feature title list in the left column is a design call, not a technical constraint. The architecture supports it either way without structural changes.
+- **`rootMargin` calibration:** Research specifies `"-40% 0px -40% 0px"` as a starting value for the viewport-center trigger, but this requires tuning against the actual section height and feature row spacing during Phase 3. Plan for a calibration pass before the scroll sync is considered complete.
 
 ---
 
 ## Sources
 
 ### Primary (HIGH confidence)
-- Vercel postmortem on CVE-2025-29927 — https://vercel.com/blog/postmortem-on-next-js-middleware-bypass
-- Datadog Security Labs CVE-2025-29927 analysis — https://securitylabs.datadoghq.com/articles/nextjs-middleware-auth-bypass/
-- Tailwind CSS Astro install guide (v4 pattern, @astrojs/tailwind deprecation) — https://tailwindcss.com/docs/guides/astro
-- PostHog Next.js docs — https://posthog.com/docs/libraries/next-js
-- PostHog Astro docs — https://posthog.com/docs/libraries/astro
-- Supabase service_role admin pattern — https://supabase.com/docs/guides/troubleshooting/performing-administration-tasks-on-the-server-side-with-the-servicerole-secret-BYM4Fa
-- @supabase/supabase-js v2.98 on npm — https://www.npmjs.com/package/@supabase/supabase-js
-- Tailwind CSS v4.0 release post (OKLCH, `@theme`) — https://tailwindcss.com/blog/tailwindcss-v4
-- Astro 6.0 release blog — https://astro.build/blog/astro-6/
+- Direct codebase read: `FeaturesSection.tsx`, `globals.css`, `useFadeIn.ts`, `FadeInWrapper.tsx`, `page.tsx`, `content.ts` — component responsibilities and existing constraints confirmed from source
+- [mdn/browser-compat-data issue #25914](https://github.com/mdn/browser-compat-data/issues/25914) — Safari `-webkit-backdrop-filter` CSS variable rejection confirmed March 2025
+- [react-intersection-observer npm](https://www.npmjs.com/package/react-intersection-observer) — v10.0.3 current stable, React 19 compatible confirmed
+- [react-intersection-observer v10.0.0 release notes](https://github.com/thebuilder/react-intersection-observer/releases/tag/v10.0.0) — API stability confirmed
+- [Tailwind CSS GitHub issue #18765](https://github.com/tailwindlabs/tailwindcss/issues/18765) — `-webkit-backdrop-filter` not reliably emitted in v4, confirmed open 2025
+- [Can I Use: IntersectionObserver](https://caniuse.com/intersectionobserver) — 97%+ support, Safari 12.1+, iOS 12.2+, no polyfill needed
+- [MDN CSS Containing Block spec](https://developer.mozilla.org/en-US/docs/Web/CSS/Containing_block) — `transform` creates new containing block, breaks sticky positioning (spec-level)
+- CSS-Tricks: [Sticky Table of Contents with Scrolling Active States](https://css-tricks.com/sticky-table-of-contents-with-scrolling-active-states/) — scroll spy pattern verification
 
 ### Secondary (MEDIUM confidence)
-- Next.js vs Astro for marketing sites 2025 — https://makersden.io/blog/nextjs-vs-astro-marketing-website
-- Motion + Astro integration guide — https://developers.netlify.com/guides/motion-animation-library-with-astro/
-- 51 High-Converting SaaS Landing Pages — https://www.klientboost.com/landing-pages/saas-landing-page/
-- B2B SaaS Landing Page Best Practices — https://unbounce.com/conversion-rate-optimization/the-state-of-saas-landing-pages/
-- Waitlist Landing Page Best Practices — https://magicui.design/blog/waitlist-landing-page
-- Password protecting Next.js routes — https://www.alexchantastic.com/password-protecting-next
+- [CSS-Tricks: Sliding effects using sticky positioning](https://css-tricks.com/creating-sliding-effects-using-sticky-positioning/) — two-column sticky layout pattern
+- [Josh W. Comeau: Next-level frosted glass with backdrop-filter](https://www.joshwcomeau.com/css/backdrop-filter/) — structural diagnosis of glass effect failure on dark backgrounds
+- [Pudding.cool: Easier scrollytelling with position:sticky](https://pudding.cool/process/scrollytelling-sticky/) — sticky container height and scroll distance pattern
+- [lightningcss issue #537](https://github.com/parcel-bundler/lightningcss/issues/537) — corroborates CSS variable restriction on `-webkit-backdrop-filter`
+- [bswen.com Safari WebKit CSS Bugs (2026-03-12)](https://docs.bswen.com/blog/2026-03-12-safari-css-issues-workarounds/) — current-date corroboration of webkit blur issues persisting
 
 ### Tertiary (MEDIUM-LOW confidence)
-- GSAP vs Motion comparison (authored by Motion team, acknowledged bias) — https://motion.dev/docs/gsap-vs-motion
-- Best Storyboard Software 2025 (competitor landscape) — https://filmustage.com/blog/the-best-storyboard-software-for-filmmaking-in-2025-with-real-world-picks/
+- [Aceternity UI: Sticky Scroll Reveal component](https://ui.aceternity.com/components/sticky-scroll-reveal) — reference implementation (React/Tailwind)
+- [DaisyUI: mockup-browser component](https://daisyui.com/components/mockup-browser/) — browser chrome reference markup
 
 ---
-*Research completed: 2026-03-11*
+*Research completed: 2026-03-12*
 *Ready for roadmap: yes*
