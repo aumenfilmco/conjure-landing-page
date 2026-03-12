@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import posthog from 'posthog-js'
 import { HERO } from '@/lib/content'
 
@@ -41,15 +42,15 @@ export function HeroSection() {
             </div>
           </div>
           {/* Screenshot body */}
-          <div className="relative bg-secondary aspect-video">
-            {/* When asset is delivered: replace with next/image priority */}
-            {/* <Image src="/hero-screenshot.webp" alt="Conjure storyboard deck — beach proposal, golden hour" width={1200} height={800} priority className="w-full h-auto" /> */}
-            <div
-              className="absolute inset-0 flex items-center justify-center"
-              data-placeholder="HERO_SCREENSHOT_REQUIRED"
-            >
-              <p className="text-muted-foreground text-sm font-mono">screenshot pending</p>
-            </div>
+          <div className="relative bg-secondary">
+            <Image
+              src="/hero-screenshot.webp"
+              alt="Conjure storyboard deck — beach proposal, golden hour, branded Google Slides export"
+              width={2984}
+              height={1865}
+              priority
+              className="w-full h-auto rounded-sm"
+            />
           </div>
         </div>
       </div>
