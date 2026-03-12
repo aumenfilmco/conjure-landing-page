@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 02-public-page/02-03-PLAN.md
-last_updated: "2026-03-12T16:48:54.452Z"
+stopped_at: Completed 02-public-page/02-04-PLAN.md
+last_updated: "2026-03-12T16:52:36.424Z"
 last_activity: 2026-03-11 — Phase 1 all 3 plans complete; production URL live at conjurestudio.ai
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 9
-  completed_plans: 7
+  completed_plans: 8
   percent: 100
 ---
 
@@ -56,6 +56,7 @@ Progress: [██████████] 100% (Phase 1) / ~25% overall
 | Phase 02-public-page P01 | 8 | 2 tasks | 3 files |
 | Phase 02-public-page P02 | 5 | 1 tasks | 1 files |
 | Phase 02-public-page P03 | 5 | 2 tasks | 3 files |
+| Phase 02-public-page P04 | 12 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -86,6 +87,8 @@ Recent decisions affecting current work:
 - [Phase 02-public-page]: formState \!== 'idle' disables submit button — covers both submitting and error states (WAIT-03)
 - [Phase 02-public-page]: data-placeholder='TESTIMONIAL_REQUIRED' on social proof card — data attribute passes container.innerHTML.includes() where JSX comment would not
 - [Phase 02-public-page]: FAQSection uses native details/summary — zero JS, each item opens independently, accessible, answers in DOM for Testing Library
+- [Phase 02-public-page]: FadeInWrapper defined as separate client component file — cannot define use client inline in Server Component page.tsx
+- [Phase 02-public-page]: useFadeIn unobserves element after first intersection — fade-in fires once per load, no repeated triggers
 
 ### Pending Todos
 
@@ -100,7 +103,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T16:48:54.450Z
-Stopped at: Completed 02-public-page/02-03-PLAN.md
+Last session: 2026-03-12T16:52:36.421Z
+Stopped at: Completed 02-public-page/02-04-PLAN.md
 Resume file: None
 Resume instruction: Begin Phase 2 planning (Public Page)
