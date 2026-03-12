@@ -1,21 +1,53 @@
 // src/app/page.tsx
-// Phase 1 skeleton — proves infrastructure before Phase 2 section components.
-// Phase 2 replaces the contents of <main> with actual section components.
+// Server Component — NO 'use client' directive
+import { checkoutUrls } from '@/lib/env'
+import { Header } from '@/components/sections/Header'
+import { HeroSection } from '@/components/sections/HeroSection'
+import { HowItWorksSection } from '@/components/sections/HowItWorksSection'
+import { FeaturesSection } from '@/components/sections/FeaturesSection'
+import { PricingSection } from '@/components/sections/PricingSection'
+import { SocialProofSection } from '@/components/sections/SocialProofSection'
+import { FAQSection } from '@/components/sections/FAQSection'
+import { WaitlistSection } from '@/components/sections/WaitlistSection'
+import { Footer } from '@/components/sections/Footer'
+import { FadeInWrapper } from '@/components/FadeInWrapper'
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-background flex items-center justify-center">
-      <div className="text-center px-6">
-        <p className="text-muted-foreground text-sm font-mono mb-4">
-          conjure — foundation phase
-        </p>
-        <h1 className="text-foreground text-2xl font-sans font-medium">
-          Infrastructure check
-        </h1>
-        <p className="text-muted-foreground text-base mt-2">
-          Dark background ✓ · Geist font ✓ · Brand tokens ✓
-        </p>
-      </div>
-    </main>
+    <>
+      <Header />
+      <main className="bg-background min-h-screen">
+        {/* Hero — above fold, no fade-in (already visible) */}
+        <HeroSection />
+
+        {/* Content sections fade in on scroll */}
+        <FadeInWrapper>
+          <HowItWorksSection />
+        </FadeInWrapper>
+
+        <FadeInWrapper>
+          <FeaturesSection />
+        </FadeInWrapper>
+
+        <FadeInWrapper>
+          {/* PricingSection is 'use client' — checkoutUrls passed as prop from here */}
+          <PricingSection checkoutUrls={checkoutUrls} />
+        </FadeInWrapper>
+
+        <FadeInWrapper>
+          <SocialProofSection />
+        </FadeInWrapper>
+
+        {/* FAQ above Waitlist — keeping FAQ near Waitlist per FAQ-02 */}
+        <FadeInWrapper>
+          <FAQSection />
+        </FadeInWrapper>
+
+        <FadeInWrapper>
+          <WaitlistSection />
+        </FadeInWrapper>
+      </main>
+      <Footer />
+    </>
   )
 }
