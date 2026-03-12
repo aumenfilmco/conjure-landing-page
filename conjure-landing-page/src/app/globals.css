@@ -59,3 +59,28 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ─── Glass Surface Utility ──────────────────────────────────────────── */
+/* Apply .glass-surface to any card or surface needing the glass effect  */
+.glass-surface {
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  transition: box-shadow 200ms ease;
+}
+.glass-surface:hover {
+  box-shadow: var(--glow-hover);
+}
+
+/* ─── Section Fade-In ────────────────────────────────────────────────── */
+/* Initial state: invisible and shifted down. JS adds .visible class.    */
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(1rem);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.fade-in-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
