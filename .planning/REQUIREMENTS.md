@@ -84,6 +84,28 @@
 - [ ] **PERF-02**: All screenshot assets delivered as WebP (brief Section 3 asset format requirement)
 - [ ] **PERF-03**: Layout renders correctly on mobile (375px) and desktop (1440px) — tested on physical iOS Safari device before launch
 
+## v1.1 Requirements — Visual Polish
+
+**Milestone goal:** Replace static FeaturesSection card grid with scroll-synced sticky panel; fix structurally broken `.glass-surface` utility.
+
+### Glass Surface
+
+- [ ] **GLAS-01**: Noise or grain texture added behind `.glass-surface` cards at the section level so `backdrop-filter: blur()` has visual pixels to process on the dark background
+- [ ] **GLAS-02**: `.glass-surface` utility patched with hardcoded `-webkit-backdrop-filter: blur(18px)` — CSS variables silently rejected by Safari on the webkit-prefixed property
+- [ ] **GLAS-03**: `Header.tsx` glass effect patched with same hardcoded webkit blur (same bug present in existing code)
+- [ ] **GLAS-04**: `@supports (backdrop-filter: blur(1px))` fallback block provides solid background for browsers without backdrop-filter support
+- [ ] **GLAS-05**: `.glass-surface` CSS tuned — `blur(16px) saturate(180%)`, border-top opacity `0.32`, inner and outer box shadows
+
+### Features Layout
+
+- [ ] **FLYT-01**: `FadeInWrapper` removed from around `FeaturesSection` in `page.tsx` — `transform: translateY()` on ancestor creates new containing block that silently breaks `position: sticky`
+- [ ] **FLYT-02**: `FeaturesSection` renders two-column layout: scrolling feature step rows (left), sticky browser-mockup panel fixed to right while scrolling through the section
+- [ ] **FLYT-03**: `IntersectionObserver` detects which feature step is in viewport center and updates `activeIndex` (0–5) — guard against initial mount fire, `observer.disconnect()` cleanup on unmount
+- [ ] **FLYT-04**: Screenshot inside mockup crossfades to match active feature — all 6 images pre-rendered in DOM with `opacity` toggling (no src swap, no flash)
+- [ ] **FLYT-05**: Active feature step row visually highlighted with mint accent color; inactive steps muted
+- [ ] **FLYT-06**: Browser mockup chrome (title bar, traffic lights, URL bar) wraps the screenshot area in the sticky panel
+- [ ] **FLYT-07**: On mobile (below `md` breakpoint), layout collapses to stacked single-column — feature description above screenshot, no sticky panel
+
 ## v2 Requirements
 
 ### Enhanced Conversion
@@ -168,7 +190,8 @@
 - v1 requirements: 46 total (40 content + 6 foundation — all individual rows counted above)
 - Mapped to phases: 46
 - Unmapped: 0 ✓
+- v1.1 requirements: 12 total (GLAS-01–05, FLYT-01–07) — traceability pending roadmap creation
 
 ---
 *Requirements defined: 2026-03-11*
-*Last updated: 2026-03-11 — traceability expanded to individual requirement rows after roadmap creation*
+*Last updated: 2026-03-12 — v1.1 Visual Polish requirements added (12 requirements)*
