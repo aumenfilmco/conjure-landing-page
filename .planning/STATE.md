@@ -3,11 +3,11 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Visual Polish
 status: planning
-stopped_at: Defining requirements for v1.1
+stopped_at: Roadmap created for v1.1 — awaiting plan-phase 5
 last_updated: "2026-03-12"
-last_activity: 2026-03-12 — Milestone v1.1 started
+last_activity: 2026-03-12 — v1.1 roadmap created (Phases 5-7)
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -18,38 +18,50 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-11)
+See: .planning/PROJECT.md (updated 2026-03-12)
 
 **Core value:** Get a visiting Director or Agency CD from landing to trial signup in one scroll — by showing them the output (a branded Google Slides deck) before explaining how it works.
-**Current focus:** Phase 1: Foundation
+**Current focus:** Phase 5: Glass and Sticky Prerequisites (v1.1 start)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: Not started (roadmap created, awaiting plan-phase 5)
 Plan: —
-Status: Defining requirements for v1.1 Visual Polish
-Last activity: 2026-03-12 — Milestone v1.1 started
+Status: v1.1 roadmap created — 3 phases (5, 6, 7), 12 requirements mapped
+Last activity: 2026-03-12 — v1.1 roadmap created (Phases 5-7)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [░░░░░░░░░░] 0% (v1.1 milestone)
+
+## v1.0 Status (for reference)
+
+| Phase | Status |
+|-------|--------|
+| 1. Foundation | Complete (2026-03-11) |
+| 2. Public Page | In Progress (5/6 plans) |
+| 3. Admin Route | Not started |
+| 4. QA and Launch | Not started |
+
+## v1.1 Phase Status
+
+| Phase | Requirements | Status |
+|-------|--------------|--------|
+| 5. Glass and Sticky Prerequisites | GLAS-01–05, FLYT-01 | Not started |
+| 6. Scroll Panel | FLYT-02–07 | Not started |
+| 7. Cross-Browser QA | (verification) | Not started |
+
+**Parallel tracks:** Phase 5 and Phase 6 can execute in parallel. Phase 7 requires both.
 
 ## Performance Metrics
 
-**Velocity:**
-- Total plans completed: 0
+**Velocity (v1.0):**
+- Total plans completed: 8
 - Average duration: — min
-- Total execution time: 0 hours
+- Total execution time: — hours
 
-**By Phase:**
+**By Phase (v1.0 history):**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
-
-**Recent Trend:**
-- Last 5 plans: —
-- Trend: —
-
-*Updated after each plan completion*
 | Phase 01-foundation P01 | 2 | 2 tasks | 8 files |
 | Phase 01-foundation P02 | 2 | 2 tasks | 3 files |
 | Phase 02-public-page P00 | 2 | 2 tasks | 6 files |
@@ -58,6 +70,14 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-public-page P03 | 5 | 2 tasks | 3 files |
 | Phase 02-public-page P04 | 12 | 2 tasks | 5 files |
 | Phase 02-public-page P05 | 5 | 2 tasks | 2 files |
+
+**v1.1 Velocity:**
+
+| Phase | Plans | Total | Avg/Plan |
+|-------|-------|-------|----------|
+| - | - | - | - |
+
+*Updated after each plan completion*
 
 ## Accumulated Context
 
@@ -85,13 +105,18 @@ Recent decisions affecting current work:
 - [Phase 02-public-page]: hero-sentinel div placed as last child of HeroSection — required by Wave 3 Header Intersection Observer
 - [Phase 02-public-page]: checkoutUrls passed as prop from page.tsx (Server Component) — env.ts never imported in PricingSection
 - [Phase 02-public-page]: Toggle aria-label always contains 'Annual' to satisfy getByRole test selector pattern
-- [Phase 02-public-page]: formState \!== 'idle' disables submit button — covers both submitting and error states (WAIT-03)
+- [Phase 02-public-page]: formState !== 'idle' disables submit button — covers both submitting and error states (WAIT-03)
 - [Phase 02-public-page]: data-placeholder='TESTIMONIAL_REQUIRED' on social proof card — data attribute passes container.innerHTML.includes() where JSX comment would not
 - [Phase 02-public-page]: FAQSection uses native details/summary — zero JS, each item opens independently, accessible, answers in DOM for Testing Library
 - [Phase 02-public-page]: FadeInWrapper defined as separate client component file — cannot define use client inline in Server Component page.tsx
 - [Phase 02-public-page]: useFadeIn unobserves element after first intersection — fade-in fires once per load, no repeated triggers
 - [Phase 02-public-page]: Hero screenshot dimensions 2984x1865 passed to next/image width/height props; priority prop required for LCP (PERF-01)
 - [Phase 02-public-page]: Removed aspect-video wrapper — next/image w-full h-auto derives aspect from intrinsic dimensions
+- [v1.1 Roadmap]: glass-surface is broken for two independent reasons — (1) backdrop-filter has nothing to average on the near-black background (noise texture fix), (2) Safari rejects CSS variables on -webkit-backdrop-filter (hardcode blur(18px) on webkit prefix)
+- [v1.1 Roadmap]: FadeInWrapper applies transform: translateY() which creates a new CSS containing block — position: sticky pins to the transformed ancestor instead of the viewport; must remove before writing any sticky layout code
+- [v1.1 Roadmap]: Phase 5 and Phase 6 are independent workstreams that can execute in parallel; Phase 7 requires both
+- [v1.1 Roadmap]: react-intersection-observer@^10.0.3 recommended for useScrollSpy — wraps native IntersectionObserver, React 19 compatible, ~5kB
+- [v1.1 Roadmap]: FLYT-01 (FadeInWrapper removal) assigned to Phase 5 alongside glass fixes — it is a structural prerequisite, not part of the scroll panel build
 
 ### Pending Todos
 
@@ -101,12 +126,12 @@ None yet.
 
 - ~~**ACTIVE GATE — Vercel deploy (01-03 Task 2):**~~ RESOLVED — Deployed at https://conjure-landing-page.vercel.app/ and https://www.conjurestudio.ai/ (both HTTP 200, 2026-03-11)
 - **CORS prerequisite (Phase 2):** `conjurestudio.app/api/waitlist` must return `Access-Control-Allow-Origin` for the landing page origin before the waitlist form can be integration-tested. Change lives in the Conjure app repo, not this one.
-- **Hero screenshot asset (Phase 2):** Branded Google Slides deck screenshot is not yet delivered. Without it the output-first hero cannot be implemented. Sourcing this is the first task of Phase 2.
-- **Waitlist API response shape (Phase 2):** Exact status codes and error formats from the live `/api/waitlist` endpoint should be confirmed by reading the Conjure app route before designing form error/success logic.
+- **Browser mockup chrome design (Phase 6):** Research identifies DaisyUI `mockup-browser` as reference but does not specify exact markup for hand-rolled implementation. Decide during Phase 6 planning: use DaisyUI (adds dependency) or hand-roll (define chrome dimensions — title bar ~32px, traffic lights, URL bar). Decide before starting layout.
+- **Noise texture method (Phase 5):** Three valid options: SVG `<filter>` with feTurbulence, tiled noise PNG as background-image, or CSS pseudo-element. Pick during Phase 5 planning based on authoring convenience.
 
 ## Session Continuity
 
-Last session: 2026-03-12T17:51:02.619Z
-Stopped at: Completed 02-public-page/02-05-PLAN.md — awaiting Task 3 visual checkpoint
+Last session: 2026-03-12T00:00:00.000Z
+Stopped at: v1.1 roadmap created — Phases 5, 6, 7 written to ROADMAP.md
 Resume file: None
-Resume instruction: Begin Phase 2 planning (Public Page)
+Resume instruction: Begin Phase 5 planning (`/gsd:plan-phase 5`) — glass and sticky prerequisite fixes. Phase 6 can start in parallel once Phase 5 plan is drafted.

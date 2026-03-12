@@ -17,6 +17,12 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 3: Admin Route** - Password-protected `/admin` with defense-in-depth auth and Supabase waitlist table
 - [ ] **Phase 4: QA and Launch** - Lighthouse LCP, physical device testing, banned-word audit, CORS verification, and deploy
 
+**Milestone v1.1: Visual Polish**
+
+- [ ] **Phase 5: Glass and Sticky Prerequisites** - `.glass-surface` structurally fixed and visible in Safari; `FadeInWrapper` removed so `position: sticky` can work
+- [ ] **Phase 6: Scroll Panel** - `FeaturesSection` rewritten as two-column sticky layout with `IntersectionObserver` scroll sync, screenshot crossfade, and mobile fallback
+- [ ] **Phase 7: Cross-Browser QA** - Glass and sticky behavior verified in Safari desktop, physical iOS, and fallback browsers; WCAG AA contrast confirmed
+
 ## Phase Details
 
 ### Phase 1: Foundation
@@ -78,10 +84,57 @@ Plans:
   5. The waitlist form POST to `conjurestudio.app/api/waitlist` succeeds from the production domain (not localhost) — confirming CORS headers are live on the Conjure app
 **Plans**: TBD
 
+---
+
+## Milestone v1.1: Visual Polish
+
+**Goal**: Replace the static FeaturesSection card grid with a scroll-synced sticky panel (browser mockup + swapping screenshots) and fix `.glass-surface` so cards read as actual glass against the dark background.
+
+**Requirements:** GLAS-01, GLAS-02, GLAS-03, GLAS-04, GLAS-05, FLYT-01, FLYT-02, FLYT-03, FLYT-04, FLYT-05, FLYT-06, FLYT-07
+
+**Coverage:** 12/12 v1.1 requirements mapped ✓
+
+**Parallel tracks:** Phase 5 (glass + sticky prerequisites) and Phase 6 (scroll panel components) are independent workstreams that can run in parallel. Phase 7 requires both to complete.
+
+### Phase 5: Glass and Sticky Prerequisites
+**Goal**: The `.glass-surface` utility renders visible frosted glass in Safari and Chrome; the structural ancestor that blocks `position: sticky` is removed
+**Depends on**: Phase 2 (existing codebase)
+**Requirements**: GLAS-01, GLAS-02, GLAS-03, GLAS-04, GLAS-05, FLYT-01
+**Success Criteria** (what must be TRUE):
+  1. In Safari desktop, `.glass-surface` cards show a visible blur/frosted effect against the dark background — the card is visually distinct from a flat dark rectangle
+  2. In Chrome, `.glass-surface` shows the same frosted glass appearance — `blur(16px) saturate(180%)` rendering, distinct border-top, and inner shadow visible
+  3. The Header glass effect in Safari matches the card glass effect — no divergence between the two safari blur renders
+  4. In a browser without `backdrop-filter` support (or with the feature disabled), `.glass-surface` cards render a legible solid fallback background rather than a transparent overlay
+  5. `FadeInWrapper` is no longer wrapping `FeaturesSection` in `page.tsx` — no `transform` ancestor exists between `FeaturesSection` and the scroll container
+**Plans**: TBD
+
+### Phase 6: Scroll Panel
+**Goal**: A visitor scrolling the Features section sees a sticky browser-mockup panel on the right whose screenshot crossfades to match the feature row currently in the viewport center; on mobile the layout collapses to a readable single-column
+**Depends on**: Phase 5 (FadeInWrapper removed, glass fixed so intermediate testing is accurate)
+**Requirements**: FLYT-02, FLYT-03, FLYT-04, FLYT-05, FLYT-06, FLYT-07
+**Success Criteria** (what must be TRUE):
+  1. Scrolling through the Features section on desktop: the right panel stays fixed in view while the left column scrolls, and the displayed screenshot changes to match whichever feature row is centered in the viewport
+  2. The screenshot swap is a crossfade (opacity transition) with no visible flash, blank frame, or layout shift — all 6 images are pre-rendered in the DOM at all times
+  3. The active feature row is visually highlighted with the mint accent color; the other rows are muted — the active state updates without user interaction as they scroll
+  4. The right panel is framed in browser mockup chrome (title bar, traffic lights, URL bar) and the screenshot sits inside that chrome without overflow
+  5. On a 375px viewport, the two-column layout is gone — each feature appears as a stacked description-above-screenshot card with no sticky panel
+**Plans**: TBD
+
+### Phase 7: Cross-Browser QA
+**Goal**: The glass effect and scroll panel are confirmed working on the browsers and devices where the bugs are most likely to surface — no regressions ship to production
+**Depends on**: Phase 5 and Phase 6
+**Requirements**: (none — verification phase; covers all GLAS-01–05 and FLYT-01–07 requirements from production angle)
+**Success Criteria** (what must be TRUE):
+  1. On a physical iOS Safari device: the glass effect is visible, the sticky panel sticks correctly (no jump or collapse), and the mobile fallback layout renders as stacked single-column without horizontal scroll
+  2. In Safari desktop: the `-webkit-backdrop-filter` fix is confirmed — blur is visible and consistent with Chrome rendering
+  3. Fast-scroll through the Features section does not produce a stuck or incorrect active feature state — the correct feature highlights within one scroll-stop
+  4. All `.glass-surface` text passes WCAG AA contrast ratio (4.5:1) against the frosted background — confirmed with a contrast checker on the rendered page
+**Plans**: TBD
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4
+Phases 1–4 execute in numeric order. Phases 5 and 6 (v1.1) can run in parallel. Phase 7 requires 5 and 6.
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -89,3 +142,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 2. Public Page | 5/6 | In Progress|  |
 | 3. Admin Route | 0/TBD | Not started | - |
 | 4. QA and Launch | 0/TBD | Not started | - |
+| 5. Glass and Sticky Prerequisites | 0/TBD | Not started | - |
+| 6. Scroll Panel | 0/TBD | Not started | - |
+| 7. Cross-Browser QA | 0/TBD | Not started | - |

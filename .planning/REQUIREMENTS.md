@@ -185,13 +185,26 @@
 | PERF-01 | Phase 4 | Pending |
 | PERF-02 | Phase 4 | Pending |
 | PERF-03 | Phase 4 | Pending |
+| GLAS-01 | Phase 5 | Pending |
+| GLAS-02 | Phase 5 | Pending |
+| GLAS-03 | Phase 5 | Pending |
+| GLAS-04 | Phase 5 | Pending |
+| GLAS-05 | Phase 5 | Pending |
+| FLYT-01 | Phase 5 | Pending |
+| FLYT-02 | Phase 6 | Pending |
+| FLYT-03 | Phase 6 | Pending |
+| FLYT-04 | Phase 6 | Pending |
+| FLYT-05 | Phase 6 | Pending |
+| FLYT-06 | Phase 6 | Pending |
+| FLYT-07 | Phase 6 | Pending |
 
 **Coverage:**
 - v1 requirements: 46 total (40 content + 6 foundation — all individual rows counted above)
-- Mapped to phases: 46
+- Mapped to phases: 46 ✓
+- v1.1 requirements: 12 total (GLAS-01–05, FLYT-01–07)
+- Mapped to phases: 12 ✓
 - Unmapped: 0 ✓
-- v1.1 requirements: 12 total (GLAS-01–05, FLYT-01–07) — traceability pending roadmap creation
 
 ---
 *Requirements defined: 2026-03-11*
-*Last updated: 2026-03-12 — v1.1 Visual Polish requirements added (12 requirements)*
+*Last updated: 2026-03-12 — v1.1 traceability added (GLAS-01–05 → Phase 5, FLYT-01 → Phase 5, FLYT-02–07 → Phase 6)*
