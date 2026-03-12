@@ -33,3 +33,51 @@ describe('content.ts — copy constants', () => {
     expect(PRICING.TIERS[0].id).toBe('scout')
   })
 })
+
+// ─── COPY-01: Banned-word compliance ──────────────────────────────────────────
+import { HERO, HOW_IT_WORKS, FEATURES, PRICING, WAITLIST, FAQ, SOCIAL_PROOF } from './content'
+
+const BANNED_WORDS = [
+  'AI-powered',
+  'platform',
+  'solution',
+  'leverage',
+  'seamless',
+  'intuitive',
+  'workflow automation',
+  'generative AI',
+  'storyboard software',
+  'asset management',
+  'collaboration hub',
+  'template',
+  'streamline',
+] as const
+
+function extractAllStrings(obj: unknown): string[] {
+  if (typeof obj === 'string') return [obj]
+  if (Array.isArray(obj)) return obj.flatMap(extractAllStrings)
+  if (obj !== null && typeof obj === 'object') return Object.values(obj).flatMap(extractAllStrings)
+  return []
+}
+
+const allCopyStrings = extractAllStrings({
+  HERO,
+  HOW_IT_WORKS,
+  FEATURES,
+  PRICING,
+  WAITLIST,
+  FAQ,
+  SOCIAL_PROOF,
+})
+
+describe('COPY-01 — banned-word compliance', () => {
+  BANNED_WORDS.forEach((word) => {
+    it(`no copy contains "${word}"`, () => {
+      const lowWord = word.toLowerCase()
+      const violations = allCopyStrings.filter((s) =>
+        s.toLowerCase().includes(lowWord)
+      )
+      expect(violations).toHaveLength(0)
+    })
+  })
+})
