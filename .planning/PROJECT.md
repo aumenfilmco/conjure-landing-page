@@ -63,5 +63,13 @@ Get a visiting Director or Agency CD from landing to trial signup in one scroll 
 | Paid-tier CTAs fall back to trial signup | Lemon Squeezy not configured yet; conversion still possible via trial | — Pending |
 | Hero leads with deck output (Moment 1) | Brief specifies: the deliverable is the hook — show the Google Slides deck first | — Pending |
 
+## Current Milestone: v1.1 Visual Polish
+
+**Goal:** Replace the static features card grid with a scroll-synced sticky panel (browser mockup + swapping screenshots) and fix `.glass-surface` so cards read as actual glass against the dark background.
+
+**Target features:**
+- Scroll-triggered sticky panel for FeaturesSection (Stripe/Linear pattern)
+- `.glass-surface` utility redesign — visible blur, legible contrast, consistent in Safari
+
 ---
-*Last updated: 2026-03-11 after initialization*
+*Last updated: 2026-03-12 after v1.1 milestone start*
