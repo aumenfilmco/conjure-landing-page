@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 02-public-page/02-00-PLAN.md
-last_updated: "2026-03-12T16:42:43.249Z"
+stopped_at: Completed 02-public-page/02-01-PLAN.md
+last_updated: "2026-03-12T16:45:39.117Z"
 last_activity: 2026-03-11 — Phase 1 all 3 plans complete; production URL live at conjurestudio.ai
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 9
-  completed_plans: 4
+  completed_plans: 5
   percent: 100
 ---
 
@@ -53,6 +53,7 @@ Progress: [██████████] 100% (Phase 1) / ~25% overall
 | Phase 01-foundation P01 | 2 | 2 tasks | 8 files |
 | Phase 01-foundation P02 | 2 | 2 tasks | 3 files |
 | Phase 02-public-page P00 | 2 | 2 tasks | 6 files |
+| Phase 02-public-page P01 | 8 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -75,6 +76,9 @@ Recent decisions affecting current work:
 - [Phase 02-public-page]: glass-surface uses var(--glass-bg/blur/border) CSS vars — no new :root declarations needed
 - [Phase 02-public-page]: RED test stubs fail at Vite import resolution phase — correct TDD enforcement before components exist
 - [Phase 02-public-page]: -webkit-backdrop-filter included for Safari support alongside backdrop-filter
+- [Phase 02-public-page]: data-placeholder attribute used for HERO_SCREENSHOT_REQUIRED detection — JSX comment renders nothing to HTML; data attribute passes container.innerHTML.includes() test
+- [Phase 02-public-page]: FeaturesSection references FEATURES constants directly (no spread) to avoid TypeScript readonly tuple spread error
+- [Phase 02-public-page]: hero-sentinel div placed as last child of HeroSection — required by Wave 3 Header Intersection Observer
 
 ### Pending Todos
 
@@ -89,7 +93,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T16:42:43.247Z
-Stopped at: Completed 02-public-page/02-00-PLAN.md
+Last session: 2026-03-12T16:45:34.486Z
+Stopped at: Completed 02-public-page/02-01-PLAN.md
 Resume file: None
 Resume instruction: Begin Phase 2 planning (Public Page)
