@@ -40,7 +40,7 @@
 - [x] **PRICE-01**: Four tier cards (Scout $39/mo, Director $59/mo, Producer $89/mo, Studio $129/mo) with exact values from brief Section 6.1 — monthly, annual, credits, projects, seats
 - [x] **PRICE-02**: Annual pricing displayed as "per month billed annually" with annual total visible
 - [x] **PRICE-03**: Paid-tier CTAs link to Lemon Squeezy checkout URLs via env vars, falling back to trial signup URL if unset
-- [ ] **PRICE-04**: Trial model block: 7-day trial, no card required, CTA "Start free — no credit card" linking to `https://conjurestudio.app/auth/signup`
+- [x] **PRICE-04**: Trial model block: 7-day trial, no card required, CTA "Start free — no credit card" linking to `https://conjurestudio.app/auth/signup`
 - [x] **PRICE-05**: PostHog `pricing_tier_viewed` event fires when user scrolls to pricing section, once per page load
 - [x] **PRICE-06**: PostHog `cta_clicked` event fires on each tier CTA with `{ cta_label, section: "pricing" }`
 
@@ -138,7 +138,7 @@
 | PRICE-01 | Phase 2 | Complete |
 | PRICE-02 | Phase 2 | Complete |
 | PRICE-03 | Phase 2 | Complete |
-| PRICE-04 | Phase 2 | Pending |
+| PRICE-04 | Phase 2 | Complete |
 | PRICE-05 | Phase 2 | Complete |
 | PRICE-06 | Phase 2 | Complete |
 | WAIT-01 | Phase 2 | Complete |
