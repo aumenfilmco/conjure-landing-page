@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Phase 2 context gathered
-last_updated: "2026-03-12T16:08:14.702Z"
+stopped_at: Completed 02-public-page/02-00-PLAN.md
+last_updated: "2026-03-12T16:42:43.249Z"
 last_activity: 2026-03-11 — Phase 1 all 3 plans complete; production URL live at conjurestudio.ai
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
+  total_plans: 9
+  completed_plans: 4
   percent: 100
 ---
 
@@ -52,6 +52,7 @@ Progress: [██████████] 100% (Phase 1) / ~25% overall
 *Updated after each plan completion*
 | Phase 01-foundation P01 | 2 | 2 tasks | 8 files |
 | Phase 01-foundation P02 | 2 | 2 tasks | 3 files |
+| Phase 02-public-page P00 | 2 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -71,6 +72,9 @@ Recent decisions affecting current work:
 - [Phase 01-foundation]: PostHog capture_pageview: false — manual $pageview deferred to Phase 2; init alone triggers decide call
 - [Phase 01-foundation]: Geist font variables on html element (not body) so --font-geist-sans inherits through entire document
 - [Phase 01-foundation]: Vercel CLI v50 requires interactive TTY for project link — cannot be run non-interactively with --scope flag
+- [Phase 02-public-page]: glass-surface uses var(--glass-bg/blur/border) CSS vars — no new :root declarations needed
+- [Phase 02-public-page]: RED test stubs fail at Vite import resolution phase — correct TDD enforcement before components exist
+- [Phase 02-public-page]: -webkit-backdrop-filter included for Safari support alongside backdrop-filter
 
 ### Pending Todos
 
@@ -85,7 +89,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T16:08:14.699Z
-Stopped at: Phase 2 context gathered
-Resume file: .planning/phases/02-public-page/02-CONTEXT.md
+Last session: 2026-03-12T16:42:43.247Z
+Stopped at: Completed 02-public-page/02-00-PLAN.md
+Resume file: None
 Resume instruction: Begin Phase 2 planning (Public Page)

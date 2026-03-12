@@ -16,54 +16,54 @@
 
 ### Hero Section
 
-- [ ] **HERO-01**: Hero headline and subhead derived from approved copy direction (brief Section 2, Component Assembly / Brand Voice) — no rewriting from scratch
-- [ ] **HERO-02**: Primary CTA links to `https://conjurestudio.app/auth/signup` with label "Start free — no credit card"
-- [ ] **HERO-03**: Hero visual shows the branded Google Slides deck output (Moment 1 from brief Section 3) — `<!-- HERO_SCREENSHOT_REQUIRED -->` placeholder until asset delivered
-- [ ] **HERO-04**: PostHog `cta_clicked` event fires on primary CTA click with `{ cta_label: "Start free — no credit card", section: "hero" }`
+- [x] **HERO-01**: Hero headline and subhead derived from approved copy direction (brief Section 2, Component Assembly / Brand Voice) — no rewriting from scratch
+- [x] **HERO-02**: Primary CTA links to `https://conjurestudio.app/auth/signup` with label "Start free — no credit card"
+- [x] **HERO-03**: Hero visual shows the branded Google Slides deck output (Moment 1 from brief Section 3) — `<!-- HERO_SCREENSHOT_REQUIRED -->` placeholder until asset delivered
+- [x] **HERO-04**: PostHog `cta_clicked` event fires on primary CTA click with `{ cta_label: "Start free — no credit card", section: "hero" }`
 
 ### How It Works Section
 
-- [ ] **HOW-01**: 3-step process section: Step 1 (Script + characters extracted), Step 2 (Components assembled per shot), Step 3 (Export to Google Slides deck)
-- [ ] **HOW-02**: Each step uses Director vocabulary (script, shot, board, deck) — no SaaS process language
+- [x] **HOW-01**: 3-step process section: Step 1 (Script + characters extracted), Step 2 (Components assembled per shot), Step 3 (Export to Google Slides deck)
+- [x] **HOW-02**: Each step uses Director vocabulary (script, shot, board, deck) — no SaaS process language
 
 ### Features Section
 
-- [ ] **FEAT-01**: Component Assembly feature card — copy from brief Section 2, "User outcome" field verbatim
-- [ ] **FEAT-02**: Character Extraction feature card — copy from brief Section 2, "User outcome" field verbatim
-- [ ] **FEAT-03**: Camera Package Presets feature card — copy from brief Section 2, "User outcome" field verbatim
-- [ ] **FEAT-04**: Character Pose Sheets feature card — copy from brief Section 2, "User outcome" field verbatim
-- [ ] **FEAT-05**: Google Slides Export feature card — copy from brief Section 2, "User outcome" field verbatim
-- [ ] **FEAT-06**: Feature visuals use screenshot moments from brief Section 3 (Moments 2–5) — `<!-- SCREENSHOT_REQUIRED: MOMENT_N -->` placeholders until assets delivered
+- [x] **FEAT-01**: Component Assembly feature card — copy from brief Section 2, "User outcome" field verbatim
+- [x] **FEAT-02**: Character Extraction feature card — copy from brief Section 2, "User outcome" field verbatim
+- [x] **FEAT-03**: Camera Package Presets feature card — copy from brief Section 2, "User outcome" field verbatim
+- [x] **FEAT-04**: Character Pose Sheets feature card — copy from brief Section 2, "User outcome" field verbatim
+- [x] **FEAT-05**: Google Slides Export feature card — copy from brief Section 2, "User outcome" field verbatim
+- [x] **FEAT-06**: Feature visuals use screenshot moments from brief Section 3 (Moments 2–5) — `<!-- SCREENSHOT_REQUIRED: MOMENT_N -->` placeholders until assets delivered
 
 ### Pricing Section
 
-- [ ] **PRICE-01**: Four tier cards (Scout $39/mo, Director $59/mo, Producer $89/mo, Studio $129/mo) with exact values from brief Section 6.1 — monthly, annual, credits, projects, seats
-- [ ] **PRICE-02**: Annual pricing displayed as "per month billed annually" with annual total visible
-- [ ] **PRICE-03**: Paid-tier CTAs link to Lemon Squeezy checkout URLs via env vars, falling back to trial signup URL if unset
+- [x] **PRICE-01**: Four tier cards (Scout $39/mo, Director $59/mo, Producer $89/mo, Studio $129/mo) with exact values from brief Section 6.1 — monthly, annual, credits, projects, seats
+- [x] **PRICE-02**: Annual pricing displayed as "per month billed annually" with annual total visible
+- [x] **PRICE-03**: Paid-tier CTAs link to Lemon Squeezy checkout URLs via env vars, falling back to trial signup URL if unset
 - [ ] **PRICE-04**: Trial model block: 7-day trial, no card required, CTA "Start free — no credit card" linking to `https://conjurestudio.app/auth/signup`
-- [ ] **PRICE-05**: PostHog `pricing_tier_viewed` event fires when user scrolls to pricing section, once per page load
-- [ ] **PRICE-06**: PostHog `cta_clicked` event fires on each tier CTA with `{ cta_label, section: "pricing" }`
+- [x] **PRICE-05**: PostHog `pricing_tier_viewed` event fires when user scrolls to pricing section, once per page load
+- [x] **PRICE-06**: PostHog `cta_clicked` event fires on each tier CTA with `{ cta_label, section: "pricing" }`
 
 ### Waitlist Form
 
-- [ ] **WAIT-01**: Email field (required) and name field (optional) with submit button labeled per approved copy
-- [ ] **WAIT-02**: Form POSTs to `https://conjurestudio.app/api/waitlist` with body `{ email, name? }` — direct cross-origin fetch, no server-side proxy
-- [ ] **WAIT-03**: Submit button disabled immediately on click to prevent double-submit
-- [ ] **WAIT-04**: Success state shown on 200 response (including duplicate email — server returns 200 for both)
-- [ ] **WAIT-05**: Error state shown on 4xx/5xx response
-- [ ] **WAIT-06**: PostHog `waitlist_form_submitted` fires on 200 with `{ email_domain, has_name }` — never capture full email address
-- [ ] **WAIT-07**: PostHog `waitlist_form_error` fires on 4xx/5xx with `{ error_type }`
+- [x] **WAIT-01**: Email field (required) and name field (optional) with submit button labeled per approved copy
+- [x] **WAIT-02**: Form POSTs to `https://conjurestudio.app/api/waitlist` with body `{ email, name? }` — direct cross-origin fetch, no server-side proxy
+- [x] **WAIT-03**: Submit button disabled immediately on click to prevent double-submit
+- [x] **WAIT-04**: Success state shown on 200 response (including duplicate email — server returns 200 for both)
+- [x] **WAIT-05**: Error state shown on 4xx/5xx response
+- [x] **WAIT-06**: PostHog `waitlist_form_submitted` fires on 200 with `{ email_domain, has_name }` — never capture full email address
+- [x] **WAIT-07**: PostHog `waitlist_form_error` fires on 4xx/5xx with `{ error_type }`
 
 ### Social Proof Section
 
-- [ ] **SOCIAL-01**: Social proof section implemented with `<!-- TESTIMONIAL_REQUIRED -->` HTML comment marking the insertion point — section is rendered with placeholder layout
-- [ ] **SOCIAL-02**: Section layout ready for: name, title, agency, and specific result (one testimonial format)
+- [x] **SOCIAL-01**: Social proof section implemented with `<!-- TESTIMONIAL_REQUIRED -->` HTML comment marking the insertion point — section is rendered with placeholder layout
+- [x] **SOCIAL-02**: Section layout ready for: name, title, agency, and specific result (one testimonial format)
 
 ### FAQ Section
 
-- [ ] **FAQ-01**: FAQ section with 3–5 questions targeting Director/CD objections — at minimum: "Do I need to know how to draw?", "What happens to my script?", "How is this different from just using Midjourney?"
-- [ ] **FAQ-02**: FAQ placed near the waitlist form (above or below) to preempt last-moment objections
-- [ ] **FAQ-03**: FAQ answers use Director vocabulary and tone-of-voice rules — no banned words
+- [x] **FAQ-01**: FAQ section with 3–5 questions targeting Director/CD objections — at minimum: "Do I need to know how to draw?", "What happens to my script?", "How is this different from just using Midjourney?"
+- [x] **FAQ-02**: FAQ placed near the waitlist form (above or below) to preempt last-moment objections
+- [x] **FAQ-03**: FAQ answers use Director vocabulary and tone-of-voice rules — no banned words
 
 ### Admin View
 
@@ -75,8 +75,8 @@
 
 ### Copy Compliance
 
-- [ ] **COPY-01**: Zero instances of banned words anywhere in public-facing copy: "AI-powered", "platform", "solution", "leverage", "seamless", "intuitive", "workflow automation", "generative AI", "storyboard software", "asset management", "collaboration hub", "template", "streamline"
-- [ ] **COPY-02**: Hero and features copy speaks Director language first (shot, board, lens, continuity) — Agency CD language (deck, turnaround, team) appears in pricing/trial sections only
+- [x] **COPY-01**: Zero instances of banned words anywhere in public-facing copy: "AI-powered", "platform", "solution", "leverage", "seamless", "intuitive", "workflow automation", "generative AI", "storyboard software", "asset management", "collaboration hub", "template", "streamline"
+- [x] **COPY-02**: Hero and features copy speaks Director language first (shot, board, lens, continuity) — Agency CD language (deck, turnaround, team) appears in pricing/trial sections only
 
 ### Performance and Responsive
 
@@ -123,43 +123,43 @@
 | FOUND-04 | Phase 1 | Complete |
 | FOUND-05 | Phase 1 | Complete |
 | FOUND-06 | Phase 1 | Complete |
-| HERO-01 | Phase 2 | Pending |
-| HERO-02 | Phase 2 | Pending |
-| HERO-03 | Phase 2 | Pending |
-| HERO-04 | Phase 2 | Pending |
-| HOW-01 | Phase 2 | Pending |
-| HOW-02 | Phase 2 | Pending |
-| FEAT-01 | Phase 2 | Pending |
-| FEAT-02 | Phase 2 | Pending |
-| FEAT-03 | Phase 2 | Pending |
-| FEAT-04 | Phase 2 | Pending |
-| FEAT-05 | Phase 2 | Pending |
-| FEAT-06 | Phase 2 | Pending |
-| PRICE-01 | Phase 2 | Pending |
-| PRICE-02 | Phase 2 | Pending |
-| PRICE-03 | Phase 2 | Pending |
+| HERO-01 | Phase 2 | Complete |
+| HERO-02 | Phase 2 | Complete |
+| HERO-03 | Phase 2 | Complete |
+| HERO-04 | Phase 2 | Complete |
+| HOW-01 | Phase 2 | Complete |
+| HOW-02 | Phase 2 | Complete |
+| FEAT-01 | Phase 2 | Complete |
+| FEAT-02 | Phase 2 | Complete |
+| FEAT-03 | Phase 2 | Complete |
+| FEAT-04 | Phase 2 | Complete |
+| FEAT-05 | Phase 2 | Complete |
+| FEAT-06 | Phase 2 | Complete |
+| PRICE-01 | Phase 2 | Complete |
+| PRICE-02 | Phase 2 | Complete |
+| PRICE-03 | Phase 2 | Complete |
 | PRICE-04 | Phase 2 | Pending |
-| PRICE-05 | Phase 2 | Pending |
-| PRICE-06 | Phase 2 | Pending |
-| WAIT-01 | Phase 2 | Pending |
-| WAIT-02 | Phase 2 | Pending |
-| WAIT-03 | Phase 2 | Pending |
-| WAIT-04 | Phase 2 | Pending |
-| WAIT-05 | Phase 2 | Pending |
-| WAIT-06 | Phase 2 | Pending |
-| WAIT-07 | Phase 2 | Pending |
-| SOCIAL-01 | Phase 2 | Pending |
-| SOCIAL-02 | Phase 2 | Pending |
-| FAQ-01 | Phase 2 | Pending |
-| FAQ-02 | Phase 2 | Pending |
-| FAQ-03 | Phase 2 | Pending |
+| PRICE-05 | Phase 2 | Complete |
+| PRICE-06 | Phase 2 | Complete |
+| WAIT-01 | Phase 2 | Complete |
+| WAIT-02 | Phase 2 | Complete |
+| WAIT-03 | Phase 2 | Complete |
+| WAIT-04 | Phase 2 | Complete |
+| WAIT-05 | Phase 2 | Complete |
+| WAIT-06 | Phase 2 | Complete |
+| WAIT-07 | Phase 2 | Complete |
+| SOCIAL-01 | Phase 2 | Complete |
+| SOCIAL-02 | Phase 2 | Complete |
+| FAQ-01 | Phase 2 | Complete |
+| FAQ-02 | Phase 2 | Complete |
+| FAQ-03 | Phase 2 | Complete |
 | ADMIN-01 | Phase 3 | Pending |
 | ADMIN-02 | Phase 3 | Pending |
 | ADMIN-03 | Phase 3 | Pending |
 | ADMIN-04 | Phase 3 | Pending |
 | ADMIN-05 | Phase 3 | Pending |
-| COPY-01 | Phase 2 | Pending |
-| COPY-02 | Phase 2 | Pending |
+| COPY-01 | Phase 2 | Complete |
+| COPY-02 | Phase 2 | Complete |
 | PERF-01 | Phase 4 | Pending |
 | PERF-02 | Phase 4 | Pending |
 | PERF-03 | Phase 4 | Pending |
