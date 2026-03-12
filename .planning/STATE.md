@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 02-public-page/02-04-PLAN.md
-last_updated: "2026-03-12T16:52:36.424Z"
+stopped_at: Completed 02-public-page/02-05-PLAN.md — awaiting Task 3 visual checkpoint
+last_updated: "2026-03-12T17:51:02.621Z"
 last_activity: 2026-03-11 — Phase 1 all 3 plans complete; production URL live at conjurestudio.ai
 progress:
   total_phases: 4
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 9
-  completed_plans: 8
+  completed_plans: 9
   percent: 100
 ---
 
@@ -57,6 +57,7 @@ Progress: [██████████] 100% (Phase 1) / ~25% overall
 | Phase 02-public-page P02 | 5 | 1 tasks | 1 files |
 | Phase 02-public-page P03 | 5 | 2 tasks | 3 files |
 | Phase 02-public-page P04 | 12 | 2 tasks | 5 files |
+| Phase 02-public-page P05 | 5 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -89,6 +90,8 @@ Recent decisions affecting current work:
 - [Phase 02-public-page]: FAQSection uses native details/summary — zero JS, each item opens independently, accessible, answers in DOM for Testing Library
 - [Phase 02-public-page]: FadeInWrapper defined as separate client component file — cannot define use client inline in Server Component page.tsx
 - [Phase 02-public-page]: useFadeIn unobserves element after first intersection — fade-in fires once per load, no repeated triggers
+- [Phase 02-public-page]: Hero screenshot dimensions 2984x1865 passed to next/image width/height props; priority prop required for LCP (PERF-01)
+- [Phase 02-public-page]: Removed aspect-video wrapper — next/image w-full h-auto derives aspect from intrinsic dimensions
 
 ### Pending Todos
 
@@ -103,7 +106,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T16:52:36.421Z
-Stopped at: Completed 02-public-page/02-04-PLAN.md
+Last session: 2026-03-12T17:51:02.619Z
+Stopped at: Completed 02-public-page/02-05-PLAN.md — awaiting Task 3 visual checkpoint
 Resume file: None
 Resume instruction: Begin Phase 2 planning (Public Page)
