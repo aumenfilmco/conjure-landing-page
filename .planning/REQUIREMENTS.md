@@ -99,12 +99,12 @@
 ### Features Layout
 
 - [x] **FLYT-01**: `FadeInWrapper` removed from around `FeaturesSection` in `page.tsx` — `transform: translateY()` on ancestor creates new containing block that silently breaks `position: sticky`
-- [ ] **FLYT-02**: `FeaturesSection` renders two-column layout: scrolling feature step rows (left), sticky browser-mockup panel fixed to right while scrolling through the section
-- [ ] **FLYT-03**: `IntersectionObserver` detects which feature step is in viewport center and updates `activeIndex` (0–5) — guard against initial mount fire, `observer.disconnect()` cleanup on unmount
-- [ ] **FLYT-04**: Screenshot inside mockup crossfades to match active feature — all 6 images pre-rendered in DOM with `opacity` toggling (no src swap, no flash)
-- [ ] **FLYT-05**: Active feature step row visually highlighted with mint accent color; inactive steps muted
-- [ ] **FLYT-06**: Browser mockup chrome (title bar, traffic lights, URL bar) wraps the screenshot area in the sticky panel
-- [ ] **FLYT-07**: On mobile (below `md` breakpoint), layout collapses to stacked single-column — feature description above screenshot, no sticky panel
+- [x] **FLYT-02**: `FeaturesSection` renders two-column layout: scrolling feature step rows (left), sticky browser-mockup panel fixed to right while scrolling through the section
+- [x] **FLYT-03**: `IntersectionObserver` detects which feature step is in viewport center and updates `activeIndex` (0–5) — guard against initial mount fire, `observer.disconnect()` cleanup on unmount
+- [x] **FLYT-04**: Screenshot inside mockup crossfades to match active feature — all 6 images pre-rendered in DOM with `opacity` toggling (no src swap, no flash)
+- [x] **FLYT-05**: Active feature step row visually highlighted with mint accent color; inactive steps muted
+- [x] **FLYT-06**: Browser mockup chrome (title bar, traffic lights, URL bar) wraps the screenshot area in the sticky panel
+- [x] **FLYT-07**: On mobile (below `md` breakpoint), layout collapses to stacked single-column — feature description above screenshot, no sticky panel
 
 ## v2 Requirements
 
@@ -191,12 +191,12 @@
 | GLAS-04 | Phase 5 | Complete |
 | GLAS-05 | Phase 5 | Complete |
 | FLYT-01 | Phase 5 | Complete |
-| FLYT-02 | Phase 6 | Pending |
-| FLYT-03 | Phase 6 | Pending |
-| FLYT-04 | Phase 6 | Pending |
-| FLYT-05 | Phase 6 | Pending |
-| FLYT-06 | Phase 6 | Pending |
-| FLYT-07 | Phase 6 | Pending |
+| FLYT-02 | Phase 6 | Complete |
+| FLYT-03 | Phase 6 | Complete |
+| FLYT-04 | Phase 6 | Complete |
+| FLYT-05 | Phase 6 | Complete |
+| FLYT-06 | Phase 6 | Complete |
+| FLYT-07 | Phase 6 | Complete |
 
 **Coverage:**
 - v1 requirements: 46 total (40 content + 6 foundation — all individual rows counted above)
