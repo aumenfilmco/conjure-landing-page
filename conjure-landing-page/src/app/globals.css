@@ -36,22 +36,27 @@
 }
 
 /* ─── Glass Surface ──────────────────────────────────────────────────── */
-/* Hardcoded rgba — NOT derived from OKLCH tokens per brief Section 1.2  */
 :root {
-  --glass-bg:     oklch(0.12 0 0 / 0.3);
-  --glass-border: oklch(0.98 0 0 / 0.1);
-  --glass-blur:   10px;
+  --glass-bg:        oklch(0.14 0 0 / 0.45);
+  --glass-border:    oklch(0.98 0 0 / 0.12);
+  --glass-blur:      18px;
+  --glass-border-top: oklch(0.98 0 0 / 0.32);
 }
 
 /* ─── Glow Effects ───────────────────────────────────────────────────── */
-/* Hardcoded rgba per brief Section 1.1 — different green than primary   */
 :root {
-  --glow-hover:  0 0 20px rgba(168, 250, 138, 0.3);
-  --glow-focus:  0 0 20px rgba(168, 250, 138, 0.4);
-  --glow-subtle: 0 0 12px rgba(168, 250, 138, 0.2);
+  --glow-hover:  0 0 32px rgba(168, 250, 138, 0.25), 0 0 8px rgba(168, 250, 138, 0.15);
+  --glow-focus:  0 0 32px rgba(168, 250, 138, 0.35);
+  --glow-subtle: 0 0 16px rgba(168, 250, 138, 0.15);
+  --glow-accent-orb-top:   radial-gradient(ellipse 80% 50% at 50% 0%,   oklch(0.92 0.18 142 / 0.22) 0%, transparent 65%);
+  --glow-accent-orb-mid:   radial-gradient(ellipse 50% 40% at 90% 50%,  oklch(0.92 0.18 142 / 0.10) 0%, transparent 60%);
+  --glow-accent-orb-lower: radial-gradient(ellipse 45% 35% at 10% 85%,  oklch(0.92 0.18 142 / 0.08) 0%, transparent 55%);
 }
 
 /* ─── Base Styles ────────────────────────────────────────────────────── */
+html {
+  background-color: oklch(0.04 0 0);
+}
 body {
   background-color: oklch(0.04 0 0);
   color: oklch(0.98 0 0);
@@ -60,17 +65,66 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ─── Glass Surface Utility ──────────────────────────────────────────── */
-/* Apply .glass-surface to any card or surface needing the glass effect  */
-.glass-surface {
-  background-color: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
-  transition: box-shadow 200ms ease;
+/* ─── Ambient glow — pseudo-element on body, no stacking context issues ─ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 90% 60% at 50% -5%,  rgba(168, 250, 138, 0.22) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 45% at 92% 48%,  rgba(168, 250, 138, 0.09) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 8%  82%,  rgba(168, 250, 138, 0.07) 0%, transparent 55%);
 }
+
+/* PostHog provider wrapper — stack above ::before glow */
+body > div {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Glass Surface Utility ──────────────────────────────────────────── */
+/* Fallback: solid background for browsers without backdrop-filter */
+.glass-surface {
+  position: relative;
+  overflow: hidden;
+  background: oklch(0.14 0 0 / 0.90);    /* solid fallback — legible without blur */
+  border: 1px solid oklch(0.98 0 0 / 0.12);
+  border-top-color: oklch(0.98 0 0 / 0.32);  /* GLAS-05: 0.32 not 0.22 */
+  transition: box-shadow 200ms ease, border-color 200ms ease;
+}
+
+/* Noise layer — gives blur() real pixels on dark background (GLAS-01) */
+.glass-surface::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px;
+  opacity: 0.04;
+  z-index: 0;
+}
+
+/* Enhancement: glass for supporting browsers (GLAS-04) */
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .glass-surface {
+    background: linear-gradient(145deg, oklch(0.20 0 0 / 0.55) 0%, oklch(0.10 0 0 / 0.35) 100%);
+    backdrop-filter: blur(16px) saturate(180%);           /* GLAS-05: hardcoded */
+    -webkit-backdrop-filter: blur(18px) saturate(180%);   /* GLAS-02: hardcoded, NOT var() */
+  }
+}
+
+/* Hover state */
 .glass-surface:hover {
-  box-shadow: var(--glow-hover);
+  box-shadow:
+    0 0 32px rgba(168, 250, 138, 0.25),
+    0 0 8px rgba(168, 250, 138, 0.15),
+    inset 0 1px 0 oklch(0.98 0 0 / 0.08);
+  border-color: oklch(0.92 0.18 142 / 0.25);
+  border-top-color: oklch(0.92 0.18 142 / 0.35);
 }
 
 /* ─── Section Fade-In ────────────────────────────────────────────────── */
