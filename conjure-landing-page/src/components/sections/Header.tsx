@@ -1,20 +1,15 @@
 'use client'
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 import { HERO } from '@/lib/content'
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
-    const sentinel = document.getElementById('hero-sentinel')
-    if (!sentinel) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => setIsScrolled(!entry.isIntersecting),
-      { threshold: 0 }
-    )
-    observer.observe(sentinel)
-    return () => observer.disconnect()
+    const onScroll = () => setIsScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   return (
@@ -23,21 +18,24 @@ export function Header() {
       style={
         isScrolled
           ? {
-              backgroundColor: 'var(--glass-bg)',
-              backdropFilter: 'blur(var(--glass-blur))',
-              WebkitBackdropFilter: 'blur(var(--glass-blur))',
-              borderBottom: '1px solid var(--glass-border)',
+              backgroundColor: 'oklch(0.14 0 0 / 0.45)',
+              backdropFilter: 'blur(16px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(18px) saturate(180%)',
+              borderBottom: '1px solid oklch(0.98 0 0 / 0.12)',
             }
           : {}
       }
     >
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        {/* Logo wordmark */}
-        <a
-          href="/"
-          className="font-mono text-foreground font-medium tracking-widest text-sm uppercase"
-        >
-          Conjure
+        {/* Logo */}
+        <a href="/">
+          <Image
+            src="/conjure-wordmark.png"
+            alt="Conjure"
+            width={795}
+            height={150}
+            className="h-6 w-auto"
+          />
         </a>
 
         {/* Primary CTA — same label as hero per CONTEXT.md */}

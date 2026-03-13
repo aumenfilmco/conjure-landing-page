@@ -6,7 +6,6 @@ import { HeroSection } from '@/components/sections/HeroSection'
 import { HowItWorksSection } from '@/components/sections/HowItWorksSection'
 import { FeaturesSection } from '@/components/sections/FeaturesSection'
 import { PricingSection } from '@/components/sections/PricingSection'
-import { SocialProofSection } from '@/components/sections/SocialProofSection'
 import { FAQSection } from '@/components/sections/FAQSection'
 import { WaitlistSection } from '@/components/sections/WaitlistSection'
 import { Footer } from '@/components/sections/Footer'
@@ -25,17 +24,11 @@ export default function Home() {
           <HowItWorksSection />
         </FadeInWrapper>
 
-        <FadeInWrapper>
-          <FeaturesSection />
-        </FadeInWrapper>
+        <FeaturesSection />
 
         <FadeInWrapper>
           {/* PricingSection is 'use client' — checkoutUrls passed as prop from here */}
           <PricingSection checkoutUrls={checkoutUrls} />
-        </FadeInWrapper>
-
-        <FadeInWrapper>
-          <SocialProofSection />
         </FadeInWrapper>
 
         {/* FAQ above Waitlist — keeping FAQ near Waitlist per FAQ-02 */}
