@@ -14,7 +14,8 @@
     "next": "16.1.6",
     "posthog-js": "^1.360.1",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "react-intersection-observer": "^10.0.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
