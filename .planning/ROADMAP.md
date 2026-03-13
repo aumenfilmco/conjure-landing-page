@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 **Milestone v1.1: Visual Polish**
 
-- [ ] **Phase 5: Glass and Sticky Prerequisites** - `.glass-surface` structurally fixed and visible in Safari; `FadeInWrapper` removed so `position: sticky` can work
+- [x] **Phase 5: Glass and Sticky Prerequisites** - `.glass-surface` structurally fixed and visible in Safari; `FadeInWrapper` removed so `position: sticky` can work (completed 2026-03-13)
 - [ ] **Phase 6: Scroll Panel** - `FeaturesSection` rewritten as two-column sticky layout with `IntersectionObserver` scroll sync, screenshot crossfade, and mobile fallback
 - [ ] **Phase 7: Cross-Browser QA** - Glass and sticky behavior verified in Safari desktop, physical iOS, and fallback browsers; WCAG AA contrast confirmed
 
@@ -146,7 +146,7 @@ Phases 1–4 execute in numeric order. Phases 5 and 6 (v1.1) can run in parallel
 | 2. Public Page | 5/6 | In Progress|  |
 | 3. Admin Route | 0/TBD | Not started | - |
 | 4. QA and Launch | 0/TBD | Not started | - |
-| 5. Glass and Sticky Prerequisites | 0/TBD | Not started | - |
+| 5. Glass and Sticky Prerequisites | 2/2 | Complete   | 2026-03-13 |
 | 6. Scroll Panel | 0/TBD | Not started | - |
 | 7. Cross-Browser QA | 0/TBD | Not started | - |
 
