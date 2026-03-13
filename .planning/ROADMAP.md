@@ -122,7 +122,11 @@ Plans:
   3. The active feature row is visually highlighted with the mint accent color; the other rows are muted — the active state updates without user interaction as they scroll
   4. The right panel is framed in browser mockup chrome (title bar, traffic lights, URL bar) and the screenshot sits inside that chrome without overflow
   5. On a 375px viewport, the two-column layout is gone — each feature appears as a stacked description-above-screenshot card with no sticky panel
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 06-01-PLAN.md — Wave 1: Install react-intersection-observer + RED failing tests for FLYT-02 through FLYT-07
+- [ ] 06-02-PLAN.md — Wave 2: Rewrite FeaturesSection as sticky scroll-synced layout with useInView, crossfade, browser mockup chrome, and mobile collapse
 
 ### Phase 7: Cross-Browser QA
 **Goal**: The glass effect and scroll panel are confirmed working on the browsers and devices where the bugs are most likely to surface — no regressions ship to production
