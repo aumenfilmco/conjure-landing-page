@@ -106,7 +106,11 @@ Plans:
   3. The Header glass effect in Safari matches the card glass effect — no divergence between the two safari blur renders
   4. In a browser without `backdrop-filter` support (or with the feature disabled), `.glass-surface` cards render a legible solid fallback background rather than a transparent overlay
   5. `FadeInWrapper` is no longer wrapping `FeaturesSection` in `page.tsx` — no `transform` ancestor exists between `FeaturesSection` and the scroll container
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — Wave 1: Write failing tests (RED) for GLAS-01–05 and FLYT-01
+- [ ] 05-02-PLAN.md — Wave 2: Implement CSS/JSX fixes — noise layer, @supports, webkit hardcode, FadeInWrapper removal
 
 ### Phase 6: Scroll Panel
 **Goal**: A visitor scrolling the Features section sees a sticky browser-mockup panel on the right whose screenshot crossfades to match the feature row currently in the viewport center; on mobile the layout collapses to a readable single-column
@@ -145,3 +149,4 @@ Phases 1–4 execute in numeric order. Phases 5 and 6 (v1.1) can run in parallel
 | 5. Glass and Sticky Prerequisites | 0/TBD | Not started | - |
 | 6. Scroll Panel | 0/TBD | Not started | - |
 | 7. Cross-Browser QA | 0/TBD | Not started | - |
+
