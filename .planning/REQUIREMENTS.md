@@ -90,15 +90,15 @@
 
 ### Glass Surface
 
-- [ ] **GLAS-01**: Noise or grain texture added behind `.glass-surface` cards at the section level so `backdrop-filter: blur()` has visual pixels to process on the dark background
-- [ ] **GLAS-02**: `.glass-surface` utility patched with hardcoded `-webkit-backdrop-filter: blur(18px)` — CSS variables silently rejected by Safari on the webkit-prefixed property
-- [ ] **GLAS-03**: `Header.tsx` glass effect patched with same hardcoded webkit blur (same bug present in existing code)
-- [ ] **GLAS-04**: `@supports (backdrop-filter: blur(1px))` fallback block provides solid background for browsers without backdrop-filter support
-- [ ] **GLAS-05**: `.glass-surface` CSS tuned — `blur(16px) saturate(180%)`, border-top opacity `0.32`, inner and outer box shadows
+- [x] **GLAS-01**: Noise or grain texture added behind `.glass-surface` cards at the section level so `backdrop-filter: blur()` has visual pixels to process on the dark background
+- [x] **GLAS-02**: `.glass-surface` utility patched with hardcoded `-webkit-backdrop-filter: blur(18px)` — CSS variables silently rejected by Safari on the webkit-prefixed property
+- [x] **GLAS-03**: `Header.tsx` glass effect patched with same hardcoded webkit blur (same bug present in existing code)
+- [x] **GLAS-04**: `@supports (backdrop-filter: blur(1px))` fallback block provides solid background for browsers without backdrop-filter support
+- [x] **GLAS-05**: `.glass-surface` CSS tuned — `blur(16px) saturate(180%)`, border-top opacity `0.32`, inner and outer box shadows
 
 ### Features Layout
 
-- [ ] **FLYT-01**: `FadeInWrapper` removed from around `FeaturesSection` in `page.tsx` — `transform: translateY()` on ancestor creates new containing block that silently breaks `position: sticky`
+- [x] **FLYT-01**: `FadeInWrapper` removed from around `FeaturesSection` in `page.tsx` — `transform: translateY()` on ancestor creates new containing block that silently breaks `position: sticky`
 - [ ] **FLYT-02**: `FeaturesSection` renders two-column layout: scrolling feature step rows (left), sticky browser-mockup panel fixed to right while scrolling through the section
 - [ ] **FLYT-03**: `IntersectionObserver` detects which feature step is in viewport center and updates `activeIndex` (0–5) — guard against initial mount fire, `observer.disconnect()` cleanup on unmount
 - [ ] **FLYT-04**: Screenshot inside mockup crossfades to match active feature — all 6 images pre-rendered in DOM with `opacity` toggling (no src swap, no flash)
@@ -185,12 +185,12 @@
 | PERF-01 | Phase 4 | Pending |
 | PERF-02 | Phase 4 | Pending |
 | PERF-03 | Phase 4 | Pending |
-| GLAS-01 | Phase 5 | Pending |
-| GLAS-02 | Phase 5 | Pending |
-| GLAS-03 | Phase 5 | Pending |
-| GLAS-04 | Phase 5 | Pending |
-| GLAS-05 | Phase 5 | Pending |
-| FLYT-01 | Phase 5 | Pending |
+| GLAS-01 | Phase 5 | Complete |
+| GLAS-02 | Phase 5 | Complete |
+| GLAS-03 | Phase 5 | Complete |
+| GLAS-04 | Phase 5 | Complete |
+| GLAS-05 | Phase 5 | Complete |
+| FLYT-01 | Phase 5 | Complete |
 | FLYT-02 | Phase 6 | Pending |
 | FLYT-03 | Phase 6 | Pending |
 | FLYT-04 | Phase 6 | Pending |

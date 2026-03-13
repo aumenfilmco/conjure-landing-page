@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Visual Polish
-status: planning
-stopped_at: Roadmap created for v1.1 — awaiting plan-phase 5
-last_updated: "2026-03-12"
+status: v1.1 roadmap created — 3 phases (5, 6, 7), 12 requirements mapped
+stopped_at: Completed 05-01-PLAN.md — 3 RED test files committed
+last_updated: "2026-03-13T12:37:40.051Z"
 last_activity: 2026-03-12 — v1.1 roadmap created (Phases 5-7)
 progress:
-  total_phases: 3
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_phases: 7
+  completed_phases: 2
+  total_plans: 11
+  completed_plans: 10
   percent: 0
 ---
 
@@ -78,6 +78,7 @@ Progress: [░░░░░░░░░░] 0% (v1.1 milestone)
 | - | - | - | - |
 
 *Updated after each plan completion*
+| Phase 05-glass-and-sticky-prerequisites P01 | 2 | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -117,6 +118,8 @@ Recent decisions affecting current work:
 - [v1.1 Roadmap]: Phase 5 and Phase 6 are independent workstreams that can execute in parallel; Phase 7 requires both
 - [v1.1 Roadmap]: react-intersection-observer@^10.0.3 recommended for useScrollSpy — wraps native IntersectionObserver, React 19 compatible, ~5kB
 - [v1.1 Roadmap]: FLYT-01 (FadeInWrapper removal) assigned to Phase 5 alongside glass fixes — it is a structural prerequisite, not part of the scroll panel build
+- [Phase 05-glass-and-sticky-prerequisites]: Used fileURLToPath(import.meta.url) for __dirname in ESM Vitest — bare __dirname throws ReferenceError in ESM
+- [Phase 05-glass-and-sticky-prerequisites]: CSS/JSX file testing via fs.readFileSync plain-text strategy — avoids jsdom import issues for CSS files
 
 ### Pending Todos
 
@@ -131,7 +134,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T00:00:00.000Z
-Stopped at: v1.1 roadmap created — Phases 5, 6, 7 written to ROADMAP.md
+Last session: 2026-03-13T12:37:40.049Z
+Stopped at: Completed 05-01-PLAN.md — 3 RED test files committed
 Resume file: None
 Resume instruction: Begin Phase 5 planning (`/gsd:plan-phase 5`) — glass and sticky prerequisite fixes. Phase 6 can start in parallel once Phase 5 plan is drafted.
