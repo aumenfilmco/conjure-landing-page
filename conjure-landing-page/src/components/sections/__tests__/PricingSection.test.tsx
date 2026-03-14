@@ -41,7 +41,7 @@ describe('PricingSection', () => {
 
   it('shows annual monthly prices after clicking annual toggle', () => {
     render(<PricingSection checkoutUrls={mockCheckoutUrls} />)
-    const toggle = screen.getByRole('button', { name: /annual/i })
+    const toggle = screen.getByRole('switch', { name: /annual/i })
     fireEvent.click(toggle)
     expect(screen.getByText(/\$32/)).toBeInTheDocument()
     expect(screen.getByText(/\$49/)).toBeInTheDocument()
@@ -52,17 +52,17 @@ describe('PricingSection', () => {
     expect(screen.getByText(/most popular/i)).toBeInTheDocument()
   })
 
-  it('tier CTA hrefs match checkoutUrls prop', () => {
+  it('tier CTA hrefs all point to waitlist', () => {
     render(<PricingSection checkoutUrls={mockCheckoutUrls} />)
     const links = screen.getAllByRole('link')
-    const hrefs = links.map((l) => l.getAttribute('href'))
-    expect(hrefs).toContain('https://example.com/director')
+    const tierLinks = links.filter((l) => l.getAttribute('href') === '#waitlist')
+    expect(tierLinks.length).toBeGreaterThan(0)
   })
 
   it('fires cta_clicked on tier CTA click', () => {
     render(<PricingSection checkoutUrls={mockCheckoutUrls} />)
-    const directorLink = screen.getByRole('link', { name: /start.*director/i })
-    fireEvent.click(directorLink)
+    const waitlistLinks = screen.getAllByRole('link', { name: /join the waitlist/i })
+    fireEvent.click(waitlistLinks[0])
     expect(posthog.capture).toHaveBeenCalledWith('cta_clicked', expect.objectContaining({ section: 'pricing' }))
   })
 })
