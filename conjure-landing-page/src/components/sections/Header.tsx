@@ -34,7 +34,7 @@ export function Header() {
             alt="Conjure"
             width={795}
             height={150}
-            className="h-6 w-auto"
+            className="h-[30px] md:h-6 w-auto"
           />
         </a>
 
