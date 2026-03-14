@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Image from 'next/image'
 import { FEATURES } from '@/lib/content'
 
@@ -85,7 +85,7 @@ function FeatureRow({ feature, index, activeIndex, onActivate }: FeatureRowProps
     <div
       ref={rowRef}
       data-testid="feature-row"
-      className={isActive ? 'text-primary' : 'text-muted-foreground'}
+      className={`min-h-[320px] flex flex-col justify-center py-8 ${isActive ? 'text-primary' : 'text-muted-foreground'}`}
     >
       <h3 className={`font-sans font-medium text-xl mb-3 ${isActive ? 'text-foreground' : ''}`}>
         {feature.TITLE}
@@ -103,9 +103,28 @@ interface FeaturesSectionProps {
 
 export function FeaturesSection({ initialActiveIndex = 0 }: FeaturesSectionProps) {
   const [activeIndex, setActiveIndex] = useState(initialActiveIndex)
+  const [mockupVisible, setMockupVisible] = useState(false)
+  const sectionRef = useRef<HTMLElement>(null)
+
+  // Hide mockup when the section leaves the viewport (scroll up or past)
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (!entry.isIntersecting) setMockupVisible(false) },
+      { threshold: 0 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  const handleActivate = useCallback((index: number) => {
+    setMockupVisible(true)
+    setActiveIndex(index)
+  }, [])
 
   return (
-    <section className="py-24 px-6 max-w-6xl mx-auto">
+    <section ref={sectionRef} className="py-24 px-6 max-w-6xl mx-auto">
       <h2 className="text-foreground font-sans font-medium tracking-tight text-3xl text-center mb-16">
         What you get
       </h2>
@@ -114,20 +133,23 @@ export function FeaturesSection({ initialActiveIndex = 0 }: FeaturesSectionProps
       {/* NOTE: no overflow-hidden here — would break position:sticky on right panel */}
       <div data-testid="features-desktop-grid" className="hidden md:grid md:grid-cols-2 md:gap-16 md:items-start">
         {/* Left: scrollable feature rows */}
-        <div className="flex flex-col gap-24">
+        <div className="flex flex-col">
           {FEATURE_LIST.map((feature, i) => (
             <FeatureRow
               key={feature.key}
               feature={feature}
               index={i}
               activeIndex={activeIndex}
-              onActivate={setActiveIndex}
+              onActivate={handleActivate}
             />
           ))}
         </div>
 
-        {/* Right: sticky browser mockup panel */}
-        <div className="sticky top-24 z-10">
+        {/* Right: sticky browser mockup panel — hidden until first row activates */}
+        <div
+          className={`sticky z-10 transition-opacity duration-500 ${mockupVisible ? 'opacity-100' : 'opacity-0'}`}
+          style={{ top: '8rem' }}
+        >
           <BrowserMockup>
             {/* Crossfade image stack — all 6 images always in DOM */}
             <div className="relative aspect-[16/10] overflow-hidden rounded-b-lg">
