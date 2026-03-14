@@ -32,11 +32,13 @@ describe('FLYT-02: Desktop two-column sticky layout', () => {
 })
 
 // ─── FLYT-03: IntersectionObserver called once per feature row ───────────────
-describe('FLYT-03: Scroll spy via IntersectionObserver', () => {
-  it('instantiates IntersectionObserver exactly 6 times on mount (one per feature row)', () => {
+describe('FLYT-03: Scroll spy via IntersectionObserver — 7 times (6 rows + 1 section)', () => {
+  it('instantiates IntersectionObserver once per feature row plus one section observer (7 total)', () => {
     render(<FeaturesSection />)
-    // Wave 1 will call new IntersectionObserver() for each of the 6 feature rows
-    expect(mockIntersectionObserver).toHaveBeenCalledTimes(6)
+    // 6 FeatureRow observers (one per row, rootMargin -40% 0px -40% 0px)
+    // + 1 FeaturesSection-level observer for mockupVisible state
+    // = 7 total IntersectionObserver constructor calls on mount
+    expect(mockIntersectionObserver).toHaveBeenCalledTimes(7)
   })
 })
 
