@@ -20,7 +20,9 @@ beforeEach(() => {
 describe('HeroSection', () => {
   it('renders HERO.HEADLINE', () => {
     render(<HeroSection />)
-    expect(screen.getByText(HERO.HEADLINE)).toBeInTheDocument()
+    const heading = screen.getByRole('heading', { level: 1 })
+    expect(heading.textContent).toContain('Direct the shot.')
+    expect(heading.textContent).toContain('Not the prompt.')
   })
 
   it('renders HERO.SUBHEAD', () => {
