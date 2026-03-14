@@ -26,7 +26,7 @@ export function Header() {
           : {}
       }
     >
-      <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-6 py-3 md:py-4 flex items-center justify-between">
         {/* Logo */}
         <a href="/">
           <Image

@@ -88,7 +88,8 @@ export function HeroSection() {
 
         {/* Headline */}
         <h1 className="text-foreground font-sans font-medium tracking-tight text-4xl lg:text-[3.25rem] leading-[1.1] mb-6">
-          {HERO.HEADLINE}
+          <span className="block">Direct the shot.</span>
+          <span className="block">Not the prompt.</span>
         </h1>
 
         {/* Subhead */}
