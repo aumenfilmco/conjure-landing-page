@@ -137,7 +137,11 @@ Plans:
   2. In Safari desktop: the `-webkit-backdrop-filter` fix is confirmed — blur is visible and consistent with Chrome rendering
   3. Fast-scroll through the Features section does not produce a stuck or incorrect active feature state — the correct feature highlights within one scroll-stop
   4. All `.glass-surface` text passes WCAG AA contrast ratio (4.5:1) against the frosted background — confirmed with a contrast checker on the rendered page
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 07-01-PLAN.md — Wave 0: Fix 3 pre-existing test failures (GLAS-05 scoped assertion, FLYT-03 observer count, PricingSection toggle role) — suite must be green before Wave 1
+- [ ] 07-02-PLAN.md — Wave 1: Manual QA checklist — Safari desktop glass, physical iOS Safari, fast-scroll scroll-spy, WCAG AA contrast
 
 ## Progress
 
@@ -152,5 +156,4 @@ Phases 1–4 execute in numeric order. Phases 5 and 6 (v1.1) can run in parallel
 | 4. QA and Launch | 0/TBD | Not started | - |
 | 5. Glass and Sticky Prerequisites | 2/2 | Complete   | 2026-03-13 |
 | 6. Scroll Panel | 2/2 | Complete   | 2026-03-13 |
-| 7. Cross-Browser QA | 0/TBD | Not started | - |
-
+| 7. Cross-Browser QA | 0/2 | Not started | - |
