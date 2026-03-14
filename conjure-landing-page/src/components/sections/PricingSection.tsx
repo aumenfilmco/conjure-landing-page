@@ -53,18 +53,35 @@ export function PricingSection({ checkoutUrls }: PricingSectionProps) {
           Monthly
         </span>
         <button
+          role="switch"
+          aria-checked={billing === 'annual'}
           aria-label={billing === 'monthly' ? 'Switch to Annual' : 'Switch to Monthly'}
           onClick={() => setBilling((b) => (b === 'monthly' ? 'annual' : 'monthly'))}
-          className={`relative w-12 h-6 rounded-full border transition-colors ${
-            billing === 'annual'
-              ? 'bg-primary border-primary'
-              : 'bg-secondary border-border'
-          }`}
+          style={{
+            position: 'relative',
+            display: 'inline-flex',
+            alignItems: 'center',
+            width: '44px',
+            height: '24px',
+            borderRadius: '12px',
+            flexShrink: 0,
+            cursor: 'pointer',
+            transition: 'background 200ms',
+            background: billing === 'annual' ? 'oklch(0.92 0.18 142)' : 'oklch(0.17 0 0)',
+            border: billing === 'annual' ? 'none' : '1px solid oklch(0.27 0 0)',
+          }}
         >
           <span
-            className={`absolute top-0.5 w-5 h-5 rounded-full bg-background transition-transform ${
-              billing === 'annual' ? 'translate-x-6' : 'translate-x-0.5'
-            }`}
+            style={{
+              position: 'absolute',
+              top: '2px',
+              left: billing === 'annual' ? '22px' : '2px',
+              width: '20px',
+              height: '20px',
+              borderRadius: '50%',
+              transition: 'left 200ms',
+              background: billing === 'annual' ? 'oklch(0.10 0 0)' : 'oklch(0.95 0 0)',
+            }}
           />
           <span className="sr-only">
             {billing === 'annual' ? 'Annual billing active' : 'Monthly billing active'}
@@ -125,16 +142,16 @@ export function PricingSection({ checkoutUrls }: PricingSectionProps) {
 
               {/* CTA — PRICE-03, PRICE-06 */}
               <a
-                href={tierCheckoutUrl(tier.id)}
+                href="#waitlist"
                 onClick={() =>
                   posthog.capture('cta_clicked', {
-                    cta_label: `Start — ${tier.name}`,
+                    cta_label: `Join waitlist — ${tier.name}`,
                     section: 'pricing',
                   })
                 }
                 className="mt-auto inline-flex items-center justify-center bg-primary text-primary-foreground px-4 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
               >
-                Start — {tier.name}
+                Join the waitlist
               </a>
             </div>
           )

@@ -6,7 +6,7 @@ export function FAQSection() {
   return (
     <section className="py-24 px-6 max-w-2xl mx-auto">
       <h2 className="text-foreground font-sans font-medium tracking-tight text-3xl text-center mb-12">
-        Questions
+        FAQ
       </h2>
       <div className="flex flex-col gap-4">
         {FAQ.ITEMS.map((item, index) => (

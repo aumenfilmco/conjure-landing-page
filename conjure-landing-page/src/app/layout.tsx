@@ -31,7 +31,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable}`}
     >
-      <body className="bg-background text-foreground font-sans antialiased">
+      <body className="text-foreground font-sans antialiased overflow-x-hidden">
         <PostHogProvider>
           {children}
         </PostHogProvider>

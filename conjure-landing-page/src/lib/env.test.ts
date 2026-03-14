@@ -4,7 +4,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 // That is correct — these are the RED tests for the TDD cycle.
 
 describe('env.ts — checkout URL fallback', () => {
-  const FALLBACK = 'https://conjurestudio.app/auth/signup'
+  const FALLBACK = '#waitlist'
 
   beforeEach(() => {
     // Ensure Lemon Squeezy vars are unset for fallback tests

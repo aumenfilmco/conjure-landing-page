@@ -17,7 +17,7 @@ export const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? 'https://us.i
 // These vars do NOT have NEXT_PUBLIC_ prefix. They are read in Server Components.
 // PricingSection (if a Client Component) must receive these as props from a
 // Server Component parent — never import env.ts directly in a 'use client' file.
-const FALLBACK_URL = 'https://conjurestudio.app/auth/signup'
+const FALLBACK_URL = '#waitlist'
 
 export const checkoutUrls = {
   scout:    process.env.LEMON_SQUEEZY_SCOUT_CHECKOUT_URL    || FALLBACK_URL,

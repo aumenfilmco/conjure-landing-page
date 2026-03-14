@@ -5,10 +5,13 @@
 
 // ─── Hero ────────────────────────────────────────────────────────────────────
 export const HERO = {
-  HEADLINE:    'Your first 20-shot board in an afternoon. Your second one faster.',
-  SUBHEAD:     'Script to Google Slides deck — characters extracted, shots assembled, deck exported. No retyping. No reformatting. No missing person in shot 12.',
-  CTA_PRIMARY: 'Start free — no credit card',
-  CTA_URL:     'https://conjurestudio.app/auth/signup',
+  HEADLINE:    'Direct the shot. Not the prompt.',
+  SUBHEAD:     'Conjure assembles every prompt from your script — characters, locations, camera packages — so you can stay in creative mode. Script to branded storyboard deck in an afternoon.',
+  BADGE:       'Commercial previs pipeline',
+  CTA_PRIMARY: 'Join the waitlist',
+  CTA_URL:     '#waitlist',
+  CTA_WAITLIST: 'Join the waitlist',
+  CTA_WAITLIST_URL: '#waitlist',
 } as const
 
 // ─── How It Works ────────────────────────────────────────────────────────────
@@ -23,38 +26,41 @@ export const HOW_IT_WORKS = {
     {
       number: 2,
       TITLE:  'Assemble each shot',
-      BODY:   'Pick the character, location, and camera package for each shot. The generation prompt builds itself — no typing the same camera spec twice.',
+      BODY:   'Pick the character, location, and camera package for each shot — or let Conjure pick them for you. The generation prompt builds itself; no typing the same camera spec twice.',
     },
     {
       number: 3,
       TITLE:  'Export to Google Slides',
-      BODY:   'Approved boards go to Google Slides in one click. Sign in with Google, hit export, and a branded deck lands in Drive — one slide per approved board, ready to send.',
+      BODY:   'Approved boards go to Google Slides in one click. Sign in with Google, hit export, and a branded deck lands in Drive — a traditional storyboard grid with captions and dialogue under each frame, ready to send.',
     },
   ],
 } as const
 
 // ─── Features ────────────────────────────────────────────────────────────────
-// User outcome copy from LANDING-PAGE-BRIEF.md Section 2 — verbatim
 export const FEATURES = {
+  SHOT_EXTRACTION: {
+    TITLE:   'Shot Extraction',
+    OUTCOME: 'Paste the script. Conjure reads it scene by scene and builds a shot list — setups, coverage logic, framing decisions derived from proven composition frameworks. Establishing, coverage, close-up, cutaway: every choice justified by what the scene actually needs. You start the board with a draft, not a blank page.',
+  },
+  CHARACTER_INTELLIGENCE: {
+    TITLE:   'Character Intelligence',
+    OUTCOME: 'Every character briefed and locked before shot one. Conjure reads the script and pulls names, descriptions, wardrobe, and notable traits — no manual notes, no rereading. Then generates a pose sheet: front, three-quarter, profile. Shot 1 and shot 28 look like the same person.',
+  },
+  LOCATION_INTELLIGENCE: {
+    TITLE:   'Location Intelligence',
+    OUTCOME: 'Every space your scenes live in, extracted and documented. Conjure pulls locations from the script and generates visual reference sheets so the beach at dawn in shot 4 matches the beach at dawn in shot 19. No mismatched backgrounds. No drift between setups.',
+  },
   COMPONENT_ASSEMBLY: {
     TITLE:   'Component Assembly',
-    OUTCOME: 'Get through a 30-shot board without typing the same character description twice. Every shot pulls from stored components — characters, locations, camera packages — assembled automatically. The creative work is picking the components; the repetitive assembly is gone.',
-  },
-  CHARACTER_EXTRACTION: {
-    TITLE:   'Character Extraction',
-    OUTCOME: 'Every character is briefed and ready before the first shot — without reading through the script yourself. Paste the script, hit extract, and get named characters with physical descriptions, wardrobe, and notable traits pulled directly from the text in under a minute.',
+    OUTCOME: 'Build once, reuse everywhere. Characters, locations, camera packages — stored as components and assembled per shot automatically. A 30-shot board without typing the same description twice. The repetitive work is gone; the creative decisions stay.',
   },
   CAMERA_PRESETS: {
     TITLE:   'Camera Package Presets',
-    OUTCOME: 'Set the camera spec once and every shot on the board uses it. RED Komodo, 35mm anamorphic, Glimmerglass — entered once per project, never per shot. The look is locked; the director\'s attention stays on the frame.',
-  },
-  POSE_SHEETS: {
-    TITLE:   'Character Pose Sheets',
-    OUTCOME: 'The same person looks like the same person in shot 1 and shot 28. Generate a pose sheet for each character — front, three-quarter, profile — and that reference holds character appearance consistent across the full board without manual description tweaking between shots.',
+    OUTCOME: 'Lock the look once. RED Komodo, 35mm anamorphic, Glimmerglass — entered once per project, applied to every shot. The camera spec is never a question. Your attention stays on the frame.',
   },
   SLIDES_EXPORT: {
-    TITLE:   'Google Slides Export',
-    OUTCOME: 'Go from approved boards to a shareable deck link in one click. Sign in with Google, hit export, and a branded presentation lands in Google Drive — one slide per approved board, ready to send. No Slides tab. No downloading images. No assembly.',
+    TITLE:   'One-Click Deck Export',
+    OUTCOME: 'Approved boards to a shareable link in one click. Sign in with Google, hit export — a branded deck lands in Drive. A traditional storyboard grid with captions and dialogue under each frame. No downloading images. No assembly.',
   },
 } as const
 
@@ -104,8 +110,8 @@ export const PRICING = {
       seatsLabel:      'Up to 3',
     },
   ],
-  TRIAL_CTA:      'Start free — no credit card',
-  TRIAL_URL:      'https://conjurestudio.app/auth/signup',
+  TRIAL_CTA:      'Join the waitlist',
+  TRIAL_URL:      '#waitlist',
   TRIAL_DURATION: '7-day trial',
   TRIAL_NOTE:     'No card required.',
   BILLING_NOTE:   'per month billed annually',

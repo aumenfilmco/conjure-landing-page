@@ -6,12 +6,12 @@ import { describe, it, expect } from 'vitest'
 describe('content.ts — copy constants', () => {
   it('HERO.CTA_PRIMARY is the approved CTA label', async () => {
     const { HERO } = await import('./content')
-    expect(HERO.CTA_PRIMARY).toBe('Start free — no credit card')
+    expect(HERO.CTA_PRIMARY).toBe('Join the waitlist')
   })
 
-  it('HERO.CTA_URL points to trial signup', async () => {
+  it('HERO.CTA_URL points to waitlist', async () => {
     const { HERO } = await import('./content')
-    expect(HERO.CTA_URL).toBe('https://conjurestudio.app/auth/signup')
+    expect(HERO.CTA_URL).toBe('#waitlist')
   })
 
   it('top-level exports are all defined', async () => {

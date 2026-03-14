@@ -30,16 +30,16 @@ describe('HeroSection', () => {
 
   it('CTA link has correct href and label', () => {
     render(<HeroSection />)
-    const cta = screen.getByRole('link', { name: HERO.CTA_PRIMARY })
-    expect(cta).toHaveAttribute('href', HERO.CTA_URL)
+    const cta = screen.getByRole('link', { name: HERO.CTA_WAITLIST })
+    expect(cta).toHaveAttribute('href', HERO.CTA_WAITLIST_URL)
   })
 
   it('fires posthog cta_clicked on CTA click', () => {
     render(<HeroSection />)
-    const cta = screen.getByRole('link', { name: HERO.CTA_PRIMARY })
+    const cta = screen.getByRole('link', { name: HERO.CTA_WAITLIST })
     fireEvent.click(cta)
     expect(posthog.capture).toHaveBeenCalledWith('cta_clicked', {
-      cta_label: HERO.CTA_PRIMARY,
+      cta_label: HERO.CTA_WAITLIST,
       section: 'hero',
     })
   })
