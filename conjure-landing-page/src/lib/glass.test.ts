@@ -50,7 +50,12 @@ describe('globals.css glass-surface', () => {
   })
 
   it('GLAS-05: .glass-surface border-top-color uses opacity 0.32 (not 0.22)', () => {
-    expect(css).toContain('0.32')
-    expect(css).not.toContain('0.98 0 0 / 0.22')
+    // Extract the .glass-surface block (up through the border-top-color line) to scope the assertion.
+    // The hover shadow legitimately uses 0.22 for the rim highlight — the full-file scan is too broad.
+    const glassSurfaceBlock = css.match(/\.glass-surface\s*\{[\s\S]*?border-top-color:[^;]+/)?.[0] ?? ''
+    expect(glassSurfaceBlock).not.toBe('')   // block must be found
+    expect(glassSurfaceBlock).toContain('0.32')
+    // Confirm 0.22 does not appear in the border-top-color portion of the block
+    expect(glassSurfaceBlock).not.toContain('0.22')
   })
 })
