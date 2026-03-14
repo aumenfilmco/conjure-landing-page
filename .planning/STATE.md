@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Visual Polish
 status: v1.1 roadmap created — 3 phases (5, 6, 7), 12 requirements mapped
-stopped_at: "Paused at checkpoint: 06-02 Task 3 (human visual verification)"
-last_updated: "2026-03-13T15:55:13.483Z"
+stopped_at: Completed 07-01-PLAN.md (test suite repair — all 65 tests green)
+last_updated: "2026-03-14T18:50:49.993Z"
 last_activity: 2026-03-12 — v1.1 roadmap created (Phases 5-7)
 progress:
   total_phases: 7
   completed_phases: 4
-  total_plans: 13
-  completed_plans: 13
+  total_plans: 15
+  completed_plans: 14
   percent: 0
 ---
 
@@ -82,6 +82,7 @@ Progress: [░░░░░░░░░░] 0% (v1.1 milestone)
 | Phase 05-glass-and-sticky-prerequisites P02 | 12 | 2 tasks | 3 files |
 | Phase 06-scroll-panel P01 | 8 | 2 tasks | 3 files |
 | Phase 06-scroll-panel P02 | 3 | 2 tasks | 1 files |
+| Phase 07-cross-browser-qa P01 | 1 | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -131,6 +132,9 @@ Recent decisions affecting current work:
 - [Phase 06-scroll-panel]: initialActiveIndex prop defined in RED tests as test-seeding mechanism for FLYT-04 and FLYT-05 scroll-spy assertions
 - [Phase 06-scroll-panel]: Used native IntersectionObserver per FeatureRow instead of useInView — react-intersection-observer pools identical-options hooks into one instance, breaking FLYT-03 (requires 6 constructor calls)
 - [Phase 06-scroll-panel]: Mobile images wrapped in aria-hidden div with alt='' — keeps them out of accessibility tree so FLYT-04 counts exactly 6 desktop panel images
+- [Phase 07-cross-browser-qa]: GLAS-05 uses regex block extraction scoped to .glass-surface block to avoid false positive from hover rim shadow (0.22) in box-shadow
+- [Phase 07-cross-browser-qa]: FLYT-03 observer count is 7 (6 FeatureRow + 1 section-level) — updated from stale RED-phase expectation of 6
+- [Phase 07-cross-browser-qa]: PricingSection toggle uses role=switch not role=button — distinct ARIA roles do not fall back to button in Testing Library
 
 ### Pending Todos
 
@@ -145,7 +149,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-13T15:55:13.481Z
-Stopped at: Paused at checkpoint: 06-02 Task 3 (human visual verification)
+Last session: 2026-03-14T18:50:49.990Z
+Stopped at: Completed 07-01-PLAN.md (test suite repair — all 65 tests green)
 Resume file: None
 Resume instruction: Begin Phase 5 planning (`/gsd:plan-phase 5`) — glass and sticky prerequisite fixes. Phase 6 can start in parallel once Phase 5 plan is drafted.
