@@ -70,7 +70,11 @@ Plans:
   2. Submitting the correct password at `/admin/login` redirects to `/admin` and displays the waitlist table (name or "—", email, timestamp) sorted newest-first with total count shown
   3. Submitting an incorrect password at `/admin/login` shows an error and does not set a session cookie
   4. The `SUPABASE_SERVICE_ROLE_KEY` is not accessible in any client-side bundle — confirmed via browser DevTools network search
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Wave 0: Install deps (jose, @supabase/supabase-js, server-only) + write RED test stubs for ADMIN-01 through ADMIN-05
+- [ ] 03-02-PLAN.md — Wave 1: Implement session.ts, supabase-admin.ts, proxy.ts, admin route pages, login form and actions
 
 ### Phase 4: QA and Launch
 **Goal**: The page passes Lighthouse LCP on mobile, renders correctly on a physical iPhone, contains zero banned words, and is cleared for the production domain
@@ -152,7 +156,7 @@ Phases 1–4 execute in numeric order. Phases 5 and 6 (v1.1) can run in parallel
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-03-11 |
 | 2. Public Page | 5/6 | In Progress|  |
-| 3. Admin Route | 0/TBD | Not started | - |
+| 3. Admin Route | 0/2 | Not started | - |
 | 4. QA and Launch | 0/TBD | Not started | - |
 | 5. Glass and Sticky Prerequisites | 2/2 | Complete   | 2026-03-13 |
 | 6. Scroll Panel | 2/2 | Complete   | 2026-03-13 |
