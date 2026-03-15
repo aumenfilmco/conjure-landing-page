@@ -19,7 +19,7 @@ provides:
   - admin/login/LoginForm.tsx: useActionState client login form
   - admin/login/page.tsx: Server Component wrapper for /admin/login
 affects:
-  - 03-03 (human verification checkpoint)
+  - 04-qa-and-launch (admin route fully functional before launch)
 
 # Tech tracking
 tech-stack:
@@ -59,7 +59,7 @@ patterns-established:
 requirements-completed: [ADMIN-01, ADMIN-02, ADMIN-03, ADMIN-04, ADMIN-05]
 
 # Metrics
-duration: 5min
+duration: ~90min (includes human verification and Supabase waitlist table creation)
 completed: 2026-03-15
 ---
 
@@ -69,10 +69,10 @@ completed: 2026-03-15
 
 ## Performance
 
-- **Duration:** ~5 min
+- **Duration:** ~90 min (includes human verification checkpoint and Supabase waitlist table creation)
 - **Started:** 2026-03-15T01:01:06Z
-- **Completed:** 2026-03-15T01:06:00Z
-- **Tasks:** 2 of 3 (Task 3 is human verification checkpoint — paused)
+- **Completed:** 2026-03-15
+- **Tasks:** 3 of 3 (all complete — human verification checkpoint approved)
 - **Files modified:** 10
 
 ## Accomplishments
@@ -88,7 +88,7 @@ Each task was committed atomically:
 
 1. **Task 1: session.ts, supabase-admin.ts, proxy.ts** - `346c3d4` (feat)
 2. **Task 2: admin page, login page, LoginForm, login actions** - `ffc4c2b` (feat)
-3. **Task 3: Human verification checkpoint** - awaiting human approval
+3. **Task 3: Human verification checkpoint** - APPROVED (Steps 1-7 all verified: redirect, CVE bypass 307, wrong password error, correct password httpOnly cookie, waitlist table empty state)
 
 ## Files Created/Modified
 - `conjure-landing-page/src/lib/session.ts` - jose HS256 JWT helpers + lazy getSecret() fix
@@ -165,10 +165,22 @@ SUPABASE_SERVICE_ROLE_KEY=<your-service-role-key>
 
 Then start dev server: `cd conjure-landing-page && npm run dev`
 
+## Human Verification Results (Task 3)
+
+All 7 verification steps approved:
+- Step 1-2: Unauthenticated GET /admin redirected to /admin/login
+- Step 3-4: CVE-2025-29927 bypass via `x-middleware-subrequest` header returned 307 (not 200) — Server Component layer active
+- Step 5: Wrong password shows "Incorrect password" error, no admin_session cookie set
+- Step 6-7: Correct password sets httpOnly cookie, redirects to /admin
+- Step 8: Waitlist table shows "Total: 0" with Name/Email/Signed up columns and empty state
+- Note: Supabase `waitlist` table did not exist prior to verification — created during this step
+
 ## Next Phase Readiness
-- All 7 source files implemented and passing tests
-- Task 3 human verification checkpoint awaiting: login flow, CVE bypass test, cookie flags, bundle safety
-- Once Task 3 approved: admin route is complete — all 5 ADMIN requirements satisfied
+
+- Admin route complete and verified — all 5 ADMIN requirements satisfied
+- v1.0 Phase 3 fully done; v1.1 roadmap already created (Phases 5, 6, 7)
+- Phase 5 (Glass and Sticky Prerequisites) and Phase 6 (Scroll Panel) can execute in parallel
+- Phase 7 (Cross-Browser QA) requires both Phase 5 and Phase 6 complete
 
 ---
 *Phase: 03-admin-route*
