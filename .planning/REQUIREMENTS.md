@@ -67,11 +67,11 @@
 
 ### Admin View
 
-- [ ] **ADMIN-01**: `/admin` route protected by password check against `ADMIN_PASSWORD` env var — verified in the Server Component (not middleware-only, due to CVE-2025-29927)
-- [ ] **ADMIN-02**: Unauthenticated requests to `/admin` redirect to `/admin/login`
-- [ ] **ADMIN-03**: Login page: single password field, submits to set a session cookie, redirects to `/admin` on success
-- [ ] **ADMIN-04**: Admin page queries Supabase `waitlist` table directly using service role key — displays signups as a table: name (or "—"), email, created_at timestamp
-- [ ] **ADMIN-05**: Table sorted by most recent first; shows total signup count
+- [x] **ADMIN-01**: `/admin` route protected by password check against `ADMIN_PASSWORD` env var — verified in the Server Component (not middleware-only, due to CVE-2025-29927)
+- [x] **ADMIN-02**: Unauthenticated requests to `/admin` redirect to `/admin/login`
+- [x] **ADMIN-03**: Login page: single password field, submits to set a session cookie, redirects to `/admin` on success
+- [x] **ADMIN-04**: Admin page queries Supabase `waitlist` table directly using service role key — displays signups as a table: name (or "—"), email, created_at timestamp
+- [x] **ADMIN-05**: Table sorted by most recent first; shows total signup count
 
 ### Copy Compliance
 
@@ -175,11 +175,11 @@
 | FAQ-01 | Phase 2 | Complete |
 | FAQ-02 | Phase 2 | Complete |
 | FAQ-03 | Phase 2 | Complete |
-| ADMIN-01 | Phase 3 | Pending |
-| ADMIN-02 | Phase 3 | Pending |
-| ADMIN-03 | Phase 3 | Pending |
-| ADMIN-04 | Phase 3 | Pending |
-| ADMIN-05 | Phase 3 | Pending |
+| ADMIN-01 | Phase 3 | Complete |
+| ADMIN-02 | Phase 3 | Complete |
+| ADMIN-03 | Phase 3 | Complete |
+| ADMIN-04 | Phase 3 | Complete |
+| ADMIN-05 | Phase 3 | Complete |
 | COPY-01 | Phase 2 | Complete |
 | COPY-02 | Phase 2 | Complete |
 | PERF-01 | Phase 4 | Pending |
