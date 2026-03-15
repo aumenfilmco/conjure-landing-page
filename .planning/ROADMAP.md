@@ -86,7 +86,11 @@ Plans:
   3. The page renders with no horizontal scroll, no clipped CTAs, and no layout breakage on a physical iOS Safari device at 375px
   4. Running a banned-word grep against all public-facing copy files returns zero matches for: "AI-powered", "platform", "solution", "leverage", "seamless", "intuitive", "workflow automation", "generative AI", "storyboard software", "asset management", "collaboration hub", "template", "streamline"
   5. The waitlist form POST to `conjurestudio.app/api/waitlist` succeeds from the production domain (not localhost) — confirming CORS headers are live on the Conjure app
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — CORS fix on conjurestudio.app/api/waitlist (cross-repo action + curl verification)
+- [ ] 04-02-PLAN.md — Full QA checklist: banned-word grep, Lighthouse LCP, WebP assets, physical iPhone, waitlist form end-to-end
 
 ---
 
