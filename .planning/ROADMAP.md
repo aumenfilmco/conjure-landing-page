@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Brand tokens, env vars, PostHog init, and copy constants before any component is written
 - [ ] **Phase 2: Public Page** - All visitor-facing sections rendered, waitlist form wired to live API, PostHog events firing
-- [ ] **Phase 3: Admin Route** - Password-protected `/admin` with defense-in-depth auth and Supabase waitlist table
+- [x] **Phase 3: Admin Route** - Password-protected `/admin` with defense-in-depth auth and Supabase waitlist table (completed 2026-03-15)
 - [ ] **Phase 4: QA and Launch** - Lighthouse LCP, physical device testing, banned-word audit, CORS verification, and deploy
 
 **Milestone v1.1: Visual Polish**
@@ -156,7 +156,7 @@ Phases 1–4 execute in numeric order. Phases 5 and 6 (v1.1) can run in parallel
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-03-11 |
 | 2. Public Page | 5/6 | In Progress|  |
-| 3. Admin Route | 1/2 | In Progress|  |
+| 3. Admin Route | 2/2 | Complete   | 2026-03-15 |
 | 4. QA and Launch | 0/TBD | Not started | - |
 | 5. Glass and Sticky Prerequisites | 2/2 | Complete   | 2026-03-13 |
 | 6. Scroll Panel | 2/2 | Complete   | 2026-03-13 |
