@@ -1,0 +1,10 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.conjurestudio.ai" }],
+      "destination": "https://conjurestudio.ai/:path*",
+      "permanent": true
+    }
+  ]
+}
