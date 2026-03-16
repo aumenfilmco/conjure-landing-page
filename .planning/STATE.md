@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Visual Polish
 status: v1.1 roadmap created — 3 phases (5, 6, 7), 12 requirements mapped
-stopped_at: Phase 4 context gathered
-last_updated: "2026-03-15T22:26:48.346Z"
+stopped_at: Completed 04-qa-and-launch 04-01-PLAN.md
+last_updated: "2026-03-16T12:29:47.874Z"
 last_activity: 2026-03-12 — v1.1 roadmap created (Phases 5-7)
 progress:
   total_phases: 7
   completed_phases: 6
-  total_plans: 17
-  completed_plans: 17
+  total_plans: 19
+  completed_plans: 18
   percent: 0
 ---
 
@@ -86,6 +86,7 @@ Progress: [░░░░░░░░░░] 0% (v1.1 milestone)
 | Phase 03-admin-route P01 | 2 | 2 tasks | 6 files |
 | Phase 03-admin-route P02 | 5 | 2 tasks | 10 files |
 | Phase 03-admin-route P02 | 90 | 3 tasks | 10 files |
+| Phase 04-qa-and-launch P01 | 5 | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -147,6 +148,8 @@ Recent decisions affecting current work:
 - [Phase 03-admin-route]: proxy.ts copied to repo root — page.test.ts path resolves 4 levels up from src/app/admin past conjure-landing-page to repo root
 - [Phase 03-admin-route]: Supabase waitlist table created during human verification — table did not exist prior; empty state confirmed working
 - [Phase 03-admin-route]: proxy.ts at repo root — page.test.ts resolves 4 levels up from src/app/admin past conjure-landing-page to repo root; copy placed at both locations
+- [Phase 04-qa-and-launch]: www subdomain required for CORS — non-www conjurestudio.app 307-redirects before CORS headers served; endpoint updated to www.conjurestudio.app
+- [Phase 04-qa-and-launch]: CORS Access-Control-Allow-Origin locked to https://conjurestudio.ai — no wildcard, no trailing slash, exactly matching production landing page origin
 
 ### Pending Todos
 
@@ -161,7 +164,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-15T22:26:48.344Z
-Stopped at: Phase 4 context gathered
-Resume file: .planning/phases/04-qa-and-launch/04-CONTEXT.md
+Last session: 2026-03-16T12:29:47.871Z
+Stopped at: Completed 04-qa-and-launch 04-01-PLAN.md
+Resume file: None
 Resume instruction: Begin Phase 5 planning (`/gsd:plan-phase 5`) — glass and sticky prerequisite fixes. Phase 6 can start in parallel once Phase 5 plan is drafted.
