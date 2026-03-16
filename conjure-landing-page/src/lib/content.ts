@@ -126,7 +126,7 @@ export const WAITLIST = {
   EMAIL_PLACEHOLDER: 'Your email',
   SUCCESS_MESSAGE:   'You\'re on the list. We\'ll reach out when access opens.',
   ERROR_MESSAGE:     'Something went wrong. Try again or email us at hello@conjurestudio.app.',
-  ENDPOINT:          'https://conjurestudio.app/api/waitlist',
+  ENDPOINT:          'https://www.conjurestudio.app/api/waitlist',
 } as const
 
 // ─── FAQ ─────────────────────────────────────────────────────────────────────
