@@ -86,11 +86,12 @@ Plans:
   3. The page renders with no horizontal scroll, no clipped CTAs, and no layout breakage on a physical iOS Safari device at 375px
   4. Running a banned-word grep against all public-facing copy files returns zero matches for: "AI-powered", "platform", "solution", "leverage", "seamless", "intuitive", "workflow automation", "generative AI", "storyboard software", "asset management", "collaboration hub", "template", "streamline"
   5. The waitlist form POST to `conjurestudio.app/api/waitlist` succeeds from the production domain (not localhost) — confirming CORS headers are live on the Conjure app
-**Plans**: 2 plans
+**Plans**: 3 plans
 
 Plans:
 - [ ] 04-01-PLAN.md — CORS fix on conjurestudio.app/api/waitlist (cross-repo action + curl verification)
 - [ ] 04-02-PLAN.md — Full QA checklist: banned-word grep, Lighthouse LCP, WebP assets, physical iPhone, waitlist form end-to-end
+- [ ] 04-03-PLAN.md — Gap closure: compress hero-screenshot.webp + add sizes prop to next/image to close PERF-01 LCP gap
 
 ---
 
@@ -161,7 +162,7 @@ Phases 1–4 execute in numeric order. Phases 5 and 6 (v1.1) can run in parallel
 | 1. Foundation | 3/3 | Complete | 2026-03-11 |
 | 2. Public Page | 5/6 | In Progress|  |
 | 3. Admin Route | 2/2 | Complete    | 2026-03-15 |
-| 4. QA and Launch | 2/2 | Complete   | 2026-03-16 |
+| 4. QA and Launch | 2/3 | Gap closure in progress | 2026-03-16 |
 | 5. Glass and Sticky Prerequisites | 2/2 | Complete   | 2026-03-13 |
 | 6. Scroll Panel | 2/2 | Complete   | 2026-03-13 |
 | 7. Cross-Browser QA | 2/2 | Complete   | 2026-03-14 |
