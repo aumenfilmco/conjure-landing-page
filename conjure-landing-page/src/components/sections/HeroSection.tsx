@@ -163,6 +163,7 @@ export function HeroSection() {
                   width={2984}
                   height={1865}
                   priority
+                  sizes="(max-width: 1024px) 100vw, 60vw"
                   className="w-full h-auto"
                 />
               </div>
