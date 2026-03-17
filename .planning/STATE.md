@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Visual Polish
 status: v1.1 roadmap created — 3 phases (5, 6, 7), 12 requirements mapped
-stopped_at: Completed 04-qa-and-launch 04-02-PLAN.md
-last_updated: "2026-03-16T13:10:35.289Z"
+stopped_at: Completed 04-qa-and-launch 04-03-PLAN.md — Phase 4 complete, PERF-01 accepted as deferred gap
+last_updated: "2026-03-17T12:10:14.880Z"
 last_activity: 2026-03-12 — v1.1 roadmap created (Phases 5-7)
 progress:
   total_phases: 7
   completed_phases: 7
-  total_plans: 19
-  completed_plans: 19
+  total_plans: 20
+  completed_plans: 20
   percent: 0
 ---
 
@@ -88,6 +88,7 @@ Progress: [░░░░░░░░░░] 0% (v1.1 milestone)
 | Phase 03-admin-route P02 | 90 | 3 tasks | 10 files |
 | Phase 04-qa-and-launch P01 | 5 | 2 tasks | 1 files |
 | Phase 04-qa-and-launch P02 | 39 | 2 tasks | 1 files |
+| Phase 04-qa-and-launch P03 | 25 | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -153,6 +154,8 @@ Recent decisions affecting current work:
 - [Phase 04-qa-and-launch]: CORS Access-Control-Allow-Origin locked to https://conjurestudio.ai — no wildcard, no trailing slash, exactly matching production landing page origin
 - [Phase 04-qa-and-launch]: PERF-01 recorded as open gap — LCP 3.3s/3.8s (non-www/www) does not meet ≤ 2.5s target; page declared functionally launch-ready with this known gap
 - [Phase 04-qa-and-launch]: PERF-02 and PERF-03 confirmed on production: WebP assets served correctly, physical iOS Safari renders without layout breakage, waitlist form submits via /api/waitlist proxy
+- [Phase 04-qa-and-launch]: PERF-01 accepted as deferred gap — LCP 3.6s after image optimisation; bottleneck is Vercel hobby tier cold start TTFB, not code; accepted for launch as waitlist page
+- [Phase 04-qa-and-launch]: sizes prop pattern for next/image: (max-width: 1024px) 100vw, 60vw — mobile full-width, desktop 60% partial-width for hero layout
 
 ### Pending Todos
 
@@ -167,7 +170,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-16T13:10:35.287Z
-Stopped at: Completed 04-qa-and-launch 04-02-PLAN.md
+Last session: 2026-03-17T12:10:14.878Z
+Stopped at: Completed 04-qa-and-launch 04-03-PLAN.md — Phase 4 complete, PERF-01 accepted as deferred gap
 Resume file: None
 Resume instruction: Begin Phase 5 planning (`/gsd:plan-phase 5`) — glass and sticky prerequisite fixes. Phase 6 can start in parallel once Phase 5 plan is drafted.

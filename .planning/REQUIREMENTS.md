@@ -80,7 +80,7 @@
 
 ### Performance and Responsive
 
-- [ ] **PERF-01**: Largest Contentful Paint (LCP) ≤ 2.5s on mobile — hero screenshot served as `next/image` with `priority` prop
+- [ ] **PERF-01**: Largest Contentful Paint (LCP) ≤ 2.5s on mobile — hero screenshot served as `next/image` with `priority` prop _(Accepted gap: measured 3.6s post-optimisation; Vercel hobby tier TTFB is the bottleneck — not fixable at code level; accepted for launch)_
 - [x] **PERF-02**: All screenshot assets delivered as WebP (brief Section 3 asset format requirement)
 - [x] **PERF-03**: Layout renders correctly on mobile (375px) and desktop (1440px) — tested on physical iOS Safari device before launch
 
@@ -182,7 +182,7 @@
 | ADMIN-05 | Phase 3 | Complete |
 | COPY-01 | Phase 2 | Complete |
 | COPY-02 | Phase 2 | Complete |
-| PERF-01 | Phase 4 | Pending |
+| PERF-01 | Phase 4 | Accepted gap — 3.6s LCP (Vercel TTFB) |
 | PERF-02 | Phase 4 | Complete |
 | PERF-03 | Phase 4 | Complete |
 | GLAS-01 | Phase 5 | Complete |
