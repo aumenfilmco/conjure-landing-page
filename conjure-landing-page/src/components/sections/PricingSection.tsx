@@ -99,7 +99,7 @@ export function PricingSection({ checkoutUrls }: PricingSectionProps) {
           const displayPrice = billing === 'monthly' ? tier.monthlyPrice : tier.annualMonthly
 
           return (
-            <div key={tier.id} className={`relative${isDirector ? ' pt-3' : ''}`}>
+            <div key={tier.id} className="relative pt-3">
               {/* Most popular badge — outside glass card so overflow:hidden doesn't clip it */}
               {isDirector && (
                 <span className="absolute top-0 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-mono px-3 py-0.5 rounded-full z-10">
