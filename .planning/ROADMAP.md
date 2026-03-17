@@ -165,4 +165,4 @@ Phases 1–4 execute in numeric order. Phases 5 and 6 (v1.1) can run in parallel
 | 4. QA and Launch | 3/3 | Complete   | 2026-03-17 |
 | 5. Glass and Sticky Prerequisites | 2/2 | Complete   | 2026-03-13 |
 | 6. Scroll Panel | 2/2 | Complete   | 2026-03-13 |
-| 7. Cross-Browser QA | 2/2 | Complete   | 2026-03-14 |
+| 7. Cross-Browser QA | 2/2 | Complete    | 2026-03-17 |
