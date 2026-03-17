@@ -99,19 +99,19 @@ export function PricingSection({ checkoutUrls }: PricingSectionProps) {
           const displayPrice = billing === 'monthly' ? tier.monthlyPrice : tier.annualMonthly
 
           return (
+            <div key={tier.id} className={`relative${isDirector ? ' pt-3' : ''}`}>
+              {/* Most popular badge — outside glass card so overflow:hidden doesn't clip it */}
+              {isDirector && (
+                <span className="absolute top-0 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-mono px-3 py-0.5 rounded-full z-10">
+                  Most popular
+                </span>
+              )}
             <div
-              key={tier.id}
-              className={`glass-surface rounded-xl p-6 flex flex-col gap-4 relative${
+              className={`glass-surface rounded-xl p-6 flex flex-col gap-4${
                 isDirector ? ' border-primary' : ''
               }`}
               style={isDirector ? { borderColor: 'var(--color-primary)', borderWidth: '2px' } : {}}
             >
-              {/* Most popular badge — Director only */}
-              {isDirector && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-mono px-3 py-0.5 rounded-full">
-                  Most popular
-                </span>
-              )}
 
               {/* Tier name */}
               <h3 className="font-mono text-sm tracking-widest text-muted-foreground uppercase">
@@ -153,6 +153,7 @@ export function PricingSection({ checkoutUrls }: PricingSectionProps) {
               >
                 Join the waitlist
               </a>
+            </div>
             </div>
           )
         })}
