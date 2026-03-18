@@ -26,10 +26,11 @@ export default function Home() {
 
         <FeaturesSection />
 
+        {/* PricingSection hidden during early waitlist — uncomment to restore
         <FadeInWrapper>
-          {/* PricingSection is 'use client' — checkoutUrls passed as prop from here */}
           <PricingSection checkoutUrls={checkoutUrls} />
         </FadeInWrapper>
+        */}
 
         {/* FAQ above Waitlist — keeping FAQ near Waitlist per FAQ-02 */}
         <FadeInWrapper>
